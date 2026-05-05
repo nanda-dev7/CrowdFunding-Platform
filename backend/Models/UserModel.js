@@ -18,11 +18,9 @@ const UserSchema = new Schema({
     type: String,
     enum: ["donor", "creator", "admin"],
     default: "donor"
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: true
 });
 
 export default model("User", UserSchema);

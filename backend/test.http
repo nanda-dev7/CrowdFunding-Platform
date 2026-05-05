@@ -3,9 +3,9 @@ POST http://localhost:5000/api/register
 Content-Type: application/json
 
 {
-  "name": "John",
-  "email": "john@gmail.com",
-  "password": "123456"
+  "name": "Pawan Kumar",
+  "email": "pawan7@gmail.com",
+  "password": "pawan@45678"
 }
 
 ### Login User
@@ -18,5 +18,5 @@ Content-Type: application/json
 }
 
 ### Get Profile
-GET http://localhost:5000/api/auth/profile
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Zjg1YjgwMTgyZWQ5NTI0NmQxZDYyMiIsImlhdCI6MTc3Nzg4NDE5MCwiZXhwIjoxNzc3OTcwNTkwfQ.OUh19DunS1DNzytvjTrQqJcKXkd85uJ1HRQG-CQicps
+GET http://localhost:5000/api/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Zjg1YjgwMTgyZWQ5NTI0NmQxZDYyMiIsImVtYWlsIjoiam9obkBnbWFpbC5jb20iLCJpYXQiOjE3Nzc5NTQxMjksImV4cCI6MTc3ODA0MDUyOX0.M_DLUuD0sbf81wJcyf2BM5MlgsklzOeF-H5bHBJiT0o

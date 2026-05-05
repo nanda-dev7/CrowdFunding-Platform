@@ -1,36 +1,35 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 
 import registerRoute from "./API/Register.js";
 import loginRoute from "./API/Login.js";
-import profileRoute from "./API/profile.js";
+import profileRoute from "./API/Profile.js";
 
-
-
-// load env variables
 dotenv.config();
 
 const app = express();
 
 // middleware
 app.use(express.json());
+app.use(cors());
 
 // routes
 app.use("/api/register", registerRoute);
 app.use("/api/login", loginRoute);
-app.use("/api/auth", profileRoute);
+app.use("/api/profile", profileRoute);
 
-// async DB + server start
+const PORT = process.env.PORT || 5000;
+
+// DB + server
 const startServer = async () => {
   try {
-    // connect DB
     await mongoose.connect(process.env.MONGO_URI);
     console.log("DB connected");
 
-    // start server
-    app.listen(process.env.PORT, () => {
-      console.log(`Server running on port ${process.env.PORT}`);
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
 
   } catch (error) {
