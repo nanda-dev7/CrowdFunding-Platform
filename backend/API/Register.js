@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
     const user = await User.create({
       name,
       email: normalizedEmail,
-      password: hashedPassword
+      passwordHash: hashedPassword
     });
 
     res.status(201).json({
