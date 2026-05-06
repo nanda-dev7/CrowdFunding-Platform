@@ -1,5 +1,5 @@
 import express from "express";
-import authMiddleware from "../middleware/auth.js";
+import authMiddleware from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -10,13 +10,13 @@ router.post("/", authMiddleware, async (req, res) => {
     // The client will discard the token
     res.json({
       success: true,
-      message: "Logout successful"
+      message: "Logout successful",
     });
   } catch (error) {
     console.error("Logout error:", error);
     res.status(500).json({
       success: false,
-      message: "Server Error"
+      message: "Server Error",
     });
   }
 });
