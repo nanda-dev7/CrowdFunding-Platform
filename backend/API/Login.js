@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
     const normalizedEmail = email.toLowerCase();
 const user = await User.findOne({
   email: normalizedEmail
-}).select("+password");
+}).select("+passwordHash");
     if (!user) {
       return res.status(400).json({
         success: false,
