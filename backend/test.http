@@ -13,10 +13,38 @@ POST http://localhost:5000/api/login
 Content-Type: application/json
 
 {
-  "email": "john@gmail.com",
-  "password": "123456"
+  "email": "pawan7@gmail.com",
+  "password": "pawan@45678"
 }
 
 ### Get Profile
 GET http://localhost:5000/api/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Zjg1YjgwMTgyZWQ5NTI0NmQxZDYyMiIsImVtYWlsIjoiam9obkBnbWFpbC5jb20iLCJpYXQiOjE3Nzc5NTQxMjksImV4cCI6MTc3ODA0MDUyOX0.M_DLUuD0sbf81wJcyf2BM5MlgsklzOeF-H5bHBJiT0o
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
+### Create Donation Order
+POST http://localhost:5000/api/donations/create-order
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
+
+{
+  "campaignId": "<your_campaign_id>",
+  "amount": 500
+}
+
+### Confirm Donation Payment
+POST http://localhost:5000/api/donations/confirm
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
+
+{
+  "donationId": "<your_donation_id>",
+  "razorpayPaymentId": "<razorpay_payment_id>",
+  "razorpaySignature": "<razorpay_signature>"
+}
+
+### Get Donation History
+GET http://localhost:5000/api/donations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
+
+### Get Donation Details
+GET http://localhost:5000/api/donations/<your_donation_id>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
