@@ -1,4 +1,4 @@
-import { Schema, Model } from "mongoose";
+import { Schema, model } from "mongoose";
 
 
 const allowedCategories = [
@@ -11,7 +11,7 @@ const allowedCategories = [
   "Emergency Relief",
 ];
 
-const campaignSchema = new Scehma({
+const campaignSchema = new Schema({
     title: {
       type: String,
       required: [true, "Campaign title is required"],
@@ -47,12 +47,13 @@ const campaignSchema = new Scehma({
       type: Date,
       required: [true, "Campaign deadline is required"],
     },
-    imageUrl: {
+    coverImageUrl:{
       type: String,
-      trim: true,
+      trim: true
     },
+    
     creatorId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: [true, "Campaign creator is required"],
     },
@@ -88,4 +89,4 @@ campaignSchema.virtual("progressPercentage").get(function () {
 });
 
 export { allowedCategories };
-export const CampaignModel = model("user", campaignSchema);
+export const CampaignModel = model("Campaign", campaignSchema);
