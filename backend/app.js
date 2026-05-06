@@ -45,57 +45,45 @@
 
 // export default app;
 
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
+import authRoutes from "./routes/auth.routes.js";
+import campaignRoutes from "./routes/campaign.routes.js";
+import donationRoutes from "./routes/donation.routes.js";
+import userRoutes from "./routes/user.routes.js";
+import campaignerRoutes from "./routes/campaigner.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
+import notificationRoutes from "./routes/notification.routes.js";
 
-require("dotenv").config();
-const express = require("express");
-const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
+import errorMiddleware from "./middleware/error.middleware.js";
+import connectDB from "./config/db.js";
+
+dotenv.config();
+
+connectDB();
 
 const app = express();
 
-// ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ─── Database ─────────────────────────────────────────────────────────────────
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => {
-    console.error("MongoDB connection error:", err.message);
-    process.exit(1);
-  });
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  }),
+);
 
-// ─── Routes ───────────────────────────────────────────────────────────────────
-
-// Member 1 — Auth (register, login, me, refresh, logout)
-const authRoutes = require("./routes/auth.routes");
 app.use("/api/auth", authRoutes);
-
-// Member 2 — Campaigns (public listing + CRUD + timeline updates)
-const campaignRoutes = require("./routes/campaign.routes");
 app.use("/api/campaigns", campaignRoutes);
-
-// Member 3 — Donations (create Razorpay order, confirm, my donations, coupons)
-const donationRoutes = require("./routes/donation.routes");
 app.use("/api/donations", donationRoutes);
-
-// Member 3 — User-scoped donation + coupon endpoints
-const userRoutes = require("./routes/user.routes");
 app.use("/api/users", userRoutes);
-
-// Member 4 — Campaigner application + status
-const campaignerRoutes = require("./routes/campaigner.routes");
 app.use("/api/campaigner", campaignerRoutes);
-
-// Member 4 — Admin controls (approve/reject, stats, user management)
-const adminRoutes = require("./routes/admin.routes");
 app.use("/api/admin", adminRoutes);
-
-// Member 5 — Notifications (list, mark read)
-const notificationRoutes = require("./routes/notification.routes");
 app.use("/api/notifications", notificationRoutes);
 
 // ─── 404 handler ──────────────────────────────────────────────────────────────
@@ -112,8 +100,4 @@ app.use((err, _req, res, _next) => {
   });
 });
 
-// ─── Start server ─────────────────────────────────────────────────────────────
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-module.exports = app;
+export default app;
