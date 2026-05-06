@@ -1,13 +1,7 @@
-const Campaign = require("../models/Campaign");
-const uploadToCloudinary = require("../utils/uploadToCloudinary");
-const createNotification = require("../utils/createNotification");
+import Campaign from "../models/CampaignModel.js";
+import uploadToCloudinary from "../utils/uploadToCloudinary.js";
+import createNotification from "../controllers/notification.controller.js";
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-/**
- * Map a sort query param to a Mongoose sort object.
- * Used by getCampaigns; urgent campaigns are surfaced first in JS after the DB fetch.
- */
 const SORT_MAP = {
   "most-funded": { raisedAmount: -1 },
   "ending-soon": { deadline: 1 },
@@ -16,17 +10,10 @@ const SORT_MAP = {
 
 const URGENCY_ORDER = { critical: 0, surgery: 1, normal: 2 };
 
-// ─── GET /api/campaigns ───────────────────────────────────────────────────────
-/**
- * List approved campaigns.
- * Supports ?category=  ?urgencyLevel=  ?sort=newest|most-funded|ending-soon
- * Always surfaces critical/surgery campaigns first regardless of sort choice.
- */
-exports.getCampaigns = async (req, res) => {
+export const getCampaigns = async (req, res) => {
   try {
     const { category, urgencyLevel, sort } = req.query;
 
-    // Member 2 spec: only approved campaigns
     const query = { status: "approved" };
     if (category) query.category = category;
     if (urgencyLevel) query.urgencyLevel = urgencyLevel;
@@ -37,7 +24,6 @@ exports.getCampaigns = async (req, res) => {
       .sort(sortObj)
       .lean();
 
-    // Member 2 spec: show urgent campaigns first
     campaigns.sort(
       (a, b) =>
         (URGENCY_ORDER[a.urgencyLevel] ?? 2) - (URGENCY_ORDER[b.urgencyLevel] ?? 2)
@@ -49,12 +35,7 @@ exports.getCampaigns = async (req, res) => {
   }
 };
 
-// ─── GET /api/campaigns/urgent ────────────────────────────────────────────────
-/**
- * Return only critical + surgery approved campaigns, sorted by nearest deadline.
- * MUST be registered before GET /api/campaigns/:id in the router.
- */
-exports.getUrgentCampaigns = async (req, res) => {
+export const getUrgentCampaigns = async (req, res) => {
   try {
     const campaigns = await Campaign.find({
       status: "approved",
@@ -76,7 +57,7 @@ exports.getUrgentCampaigns = async (req, res) => {
  * Populates creator name + donations.
  * Hides donor identity when isAnonymous === true (Member 3 Donation field name).
  */
-exports.getCampaignById = async (req, res) => {
+export const getCampaignById = async (req, res) => {
   try {
     const campaign = await Campaign.findById(req.params.id)
       .populate("creator", "name email")
@@ -92,8 +73,6 @@ exports.getCampaignById = async (req, res) => {
       return res.status(404).json({ success: false, message: "Campaign not found" });
     }
 
-    // Member 2 spec: hide donor identity for anonymous donations
-    // Field name from Member 3's Donation model: isAnonymous
     campaign.donations = campaign.donations
       .filter((d) => d.status === "success") // only confirmed donations
       .map((d) => {
@@ -123,13 +102,7 @@ exports.getCampaignById = async (req, res) => {
   }
 };
 
-// ─── POST /api/campaigns ──────────────────────────────────────────────────────
-/**
- * Create a new campaign (campaigner or admin only).
- * Uploads cover image to Cloudinary; saves with status: pending.
- * Member 4 admin must approve before the campaign becomes public.
- */
-exports.createCampaign = async (req, res) => {
+export const createCampaign = async (req, res) => {
   try {
     if (!req.file) {
       return res
@@ -159,7 +132,7 @@ exports.createCampaign = async (req, res) => {
       deadline,
       coverImage,
       urgencyLevel: urgencyLevel || "normal",
-      creator: req.user._id, // Member 1 attaches this via protect middleware
+      creator: req.user._id,
     });
 
     res.status(201).json({ success: true, data: campaign });

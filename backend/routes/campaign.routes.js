@@ -1,19 +1,16 @@
-const express = require("express");
-const router = express.Router();
-
-const {
+import express from "express";
+import {
   getCampaigns,
   getUrgentCampaigns,
   getCampaignById,
   createCampaign,
   editCampaign,
   addTimelineUpdate,
-} = require("../controllers/campaign.controller");
+} from "../controllers/campaign.controller.js";
+import { protect, requireRole } from "../middleware/auth.middleware.js";
+import upload from "../middleware/upload.middleware.js";
 
-// Member 1's middleware — auth + role guards
-const { protect, requireRole } = require("../middleware/auth.middleware");
-// Member 2's upload middleware (multer memoryStorage)
-const upload = require("../middleware/upload.middleware");
+const router = express.Router();
 
 // ─── Public routes ────────────────────────────────────────────────────────────
 
@@ -62,4 +59,4 @@ router.post(
   addTimelineUpdate
 );
 
-module.exports = router;
+export default router;
