@@ -1,17 +1,19 @@
-const express = require("express");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
-const authRoutes = require("./routes/auth.routes");
-const campaignRoutes = require("./routes/campaign.routes");
-const donationRoutes = require("./routes/donation.routes");
-const campaignerRoutes = require("./routes/campaigner.routes");
-const adminRoutes = require("./routes/admin.routes");
-const notificationRoutes = require("./routes/notification.routes");
-const couponRoutes = require("./routes/coupon.routes");
-const dashboardRoutes = require("./routes/dashboard.routes");
+import registerRoutes from "./API/Register.js";
+import loginRoutes from "./API/Login.js";
+import profileRoutes from "./API/Profile.js";
+import campaignRoutes from "./routes/campaign.routes.js";
+import donationRoutes from "./routes/donation.routes.js";
+import campaignerRoutes from "./routes/campaigner.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
+import notificationRoutes from "./routes/notification.routes.js";
 
-const errorMiddleware = require("./middleware/error.middleware");
+import dashboardRoutes from "./routes/dashboard.routes.js";
+
+import errorMiddleware from "./middleware/error.middleware.js";
 
 const app = express();
 
@@ -25,15 +27,16 @@ app.use(
   })
 );
 
-app.use("/api/auth", authRoutes);
+app.use("/api/register", registerRoutes);
+app.use("/api/login", loginRoutes);
+app.use("/api/profile", profileRoutes);
 app.use("/api/campaigns", campaignRoutes);
 app.use("/api/donations", donationRoutes);
 app.use("/api/campaigner", campaignerRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
-app.use("/api/users/me/coupons", couponRoutes);
 app.use("/api", dashboardRoutes);
 
 app.use(errorMiddleware);
 
-module.exports = app;
+export default app;
