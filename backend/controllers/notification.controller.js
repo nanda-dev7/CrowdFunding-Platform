@@ -1,4 +1,4 @@
-const Notification = require("../models/Notification");
+import Notification from "../models/notification.model.js";
 
 /**
  * createNotification
@@ -23,4 +23,4 @@ const createNotification = async ({ user, title, message, type, campaign }) => {
   });
 };
 
-module.exports = createNotification;
+export default createNotification;
