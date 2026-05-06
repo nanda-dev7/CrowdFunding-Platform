@@ -1,6 +1,6 @@
-import Donation from "../Models/DonationModel.js";
-import { CampaignModel } from "../Models/CampaignModel.js";
-import User from "../Models/UserModel.js";
+import Donation from "../models/DonationModel.js";
+import { CampaignModel } from "../models/CampaignModel.js";
+import User from "../models/UserModel.js";
 import razorpay from "../config/razorpay.js";
 import verifyRazorpaySignature from "../utils/verifyRazorpaySignature.js";
 

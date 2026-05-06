@@ -1,4 +1,4 @@
-const Campaign = require("../models/Campaign");
+import { CampaignModel } from "../models/CampaignModel.js";
 
 const sendResponse = (res, statusCode, success, message, data = {}) => {
   return res.status(statusCode).json({
@@ -24,7 +24,7 @@ const populateCreator = {
 
 const createCampaign = async (req, res) => {
   try {
-    const campaign = await Campaign.create({
+    const campaign = await CampaignModel.create({
       ...req.body,
       creatorId: req.user.id,
       status: "pending",
@@ -48,7 +48,7 @@ const getAllCampaigns = async (req, res) => {
   try {
     const query = isAdmin(req.user) ? {} : { status: "approved" };
 
-    const campaigns = await Campaign.find(query)
+    const campaigns = await CampaignModel.find(query)
       .populate(populateCreator)
       .sort({ createdAt: -1 });
 
@@ -70,7 +70,7 @@ const getCampaignById = async (req, res) => {
       ? { _id: req.params.id }
       : { _id: req.params.id, status: "approved" };
 
-    const campaign = await Campaign.findOne(query).populate(populateCreator);
+    const campaign = await CampaignModel.findOne(query).populate(populateCreator);
 
     if (!campaign) {
       return sendResponse(res, 404, false, "Campaign not found");
@@ -90,7 +90,7 @@ const getCampaignById = async (req, res) => {
 
 const updateCampaign = async (req, res) => {
   try {
-    const campaign = await Campaign.findById(req.params.id);
+    const campaign = await CampaignModel.findById(req.params.id);
 
     if (!campaign) {
       return sendResponse(res, 404, false, "Campaign not found");
@@ -108,7 +108,7 @@ const updateCampaign = async (req, res) => {
     const { status, creatorId, raisedAmount, isVerified, ...updates } =
       req.body;
 
-    const updatedCampaign = await Campaign.findByIdAndUpdate(
+    const updatedCampaign = await CampaignModel.findByIdAndUpdate(
       req.params.id,
       updates,
       { new: true, runValidators: true }
@@ -128,7 +128,7 @@ const updateCampaign = async (req, res) => {
 
 const deleteCampaign = async (req, res) => {
   try {
-    const campaign = await Campaign.findById(req.params.id);
+    const campaign = await CampaignModel.findById(req.params.id);
 
     if (!campaign) {
       return sendResponse(res, 404, false, "Campaign not found");
@@ -143,14 +143,14 @@ const deleteCampaign = async (req, res) => {
       );
     }
 
-    await Campaign.findByIdAndDelete(req.params.id);
+    await CampaignModel.findByIdAndDelete(req.params.id);
     return sendResponse(res, 200, true, "Campaign deleted successfully");
   } catch (error) {
     return sendResponse(res, 500, false, error.message);
   }
 };
 
-module.exports = {
+export {
   createCampaign,
   getAllCampaigns,
   getCampaignById,

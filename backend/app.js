@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 
 import registerRoutes from "./API/Register.js";
 import loginRoutes from "./API/Login.js";
+import logoutRoutes from "./API/Logout.js";
+import refreshTokenRoutes from "./API/RefreshToken.js";
 import profileRoutes from "./API/Profile.js";
 import campaignRoutes from "./routes/campaign.routes.js";
 import donationRoutes from "./routes/donation.routes.js";
@@ -29,6 +31,8 @@ app.use(
 
 app.use("/api/register", registerRoutes);
 app.use("/api/login", loginRoutes);
+app.use("/api/logout", logoutRoutes);
+app.use("/api/refresh-token", refreshTokenRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/campaigns", campaignRoutes);
 app.use("/api/donations", donationRoutes);
