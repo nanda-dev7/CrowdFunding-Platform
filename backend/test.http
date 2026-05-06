@@ -17,6 +17,20 @@ Content-Type: application/json
   "password": "pawan@45678"
 }
 
+###LOGOUT
+POST http://localhost:5000/api/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
+
+### Refresh Token
+POST http://localhost:5000/api/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "your_refresh_token_here"
+}
+
+
+
 ### Get Profile
 GET http://localhost:5000/api/profile
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY

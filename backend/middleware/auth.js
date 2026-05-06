@@ -5,7 +5,10 @@ const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Invalid or missing token" });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid or missing token"
+      });
     }
 
     const token = authHeader.split(" ")[1];
@@ -21,10 +24,24 @@ const authMiddleware = (req, res, next) => {
 
   } catch (error) {
     if (error.name === "TokenExpiredError") {
-      return res.status(401).json({ message: "Token expired" });
+      return res.status(401).json({
+        success: false,
+        message: "Token expired"
+      });
     }
 
-    res.status(401).json({ message: "Unauthorized" });
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token"
+      });
+    }
+
+    console.error("Auth middleware error:", error);
+    res.status(401).json({
+      success: false,
+      message: "Unauthorized"
+    });
   }
 };
 
