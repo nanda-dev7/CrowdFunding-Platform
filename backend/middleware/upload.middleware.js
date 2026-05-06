@@ -1,4 +1,4 @@
-const multer = require("multer");
+import multer from "multer";
 
 // Keep files in memory so we can stream the buffer directly to Cloudinary.
 // Member 4 (campaigner document upload) also imports this middleware.
@@ -16,4 +16,4 @@ const upload = multer({
   },
 });
 
-module.exports = upload;
+export default upload;

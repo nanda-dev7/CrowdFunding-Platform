@@ -1,5 +1,5 @@
-const cloudinary = require("../config/cloudinary");
-const streamifier = require("streamifier");
+import cloudinary from "../config/cloudinary.js";
+import streamifier from "streamifier";
 
 /**
  * uploadToCloudinary
@@ -27,4 +27,4 @@ const uploadToCloudinary = (buffer, folder = "campaigns") => {
   });
 };
 
-module.exports = uploadToCloudinary;
+export default uploadToCloudinary;

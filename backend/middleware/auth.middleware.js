@@ -49,8 +49,8 @@
 
 
 
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+import jwt from "jsonwebtoken";
+import User from "../models/UserModel.js";
 
 /**
  * protect — verifies the JWT access token and attaches req.user.
@@ -91,4 +91,4 @@ const requireRole = (...roles) => {
   };
 };
 
-module.exports = { protect, requireRole };
+export { protect, requireRole };
