@@ -1,92 +1,83 @@
-import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 
+const updateSchema = new mongoose.Schema(
+  {
+    stage: {
+      type: String,
+      enum: ["before", "during", "after"],
+      required: true,
+    },
+    text: { type: String, required: true },
+    image: { type: String, default: null },
+    date: { type: Date, default: Date.now },
+  },
+  { _id: true }
+);
 
-const allowedCategories = [
-  "Medical",
-  "Education",
-  "Startup",
-  "Social Cause",
-  "Environment",
-  "Animal Welfare",
-  "Emergency Relief",
-];
-
-const campaignSchema = new Schema({
+const campaignSchema = new mongoose.Schema(
+  {
     title: {
       type: String,
-      required: [true, "Campaign title is required"],
+      required: [true, "Title is required"],
       trim: true,
-      minlength: [3, "Campaign title must be at least 3 characters"],
-      maxlength: [120, "Campaign title cannot exceed 120 characters"],
     },
     description: {
       type: String,
-      required: [true, "Campaign description is required"],
-      trim: true,
-      minlength: [10, "Campaign description must be at least 10 characters"],
+      required: [true, "Description is required"],
     },
     category: {
       type: String,
-      required: [true, "Campaign category is required"],
-      enum: {
-        values: allowedCategories,
-        message: "Invalid campaign category",
-      },
+      enum: ["Emergency", "Medical", "Shelter", "Feeding"],
+      required: [true, "Category is required"],
     },
     goalAmount: {
       type: Number,
-      required: [true, "Funding goal amount is required"],
-      min: [1, "Goal amount must be greater than 0"],
+      required: [true, "Goal amount is required"],
+      min: [1, "Goal amount must be positive"],
     },
     raisedAmount: {
       type: Number,
       default: 0,
-      min: [0, "Raised amount cannot be negative"],
+      min: 0,
     },
     deadline: {
       type: Date,
-      required: [true, "Campaign deadline is required"],
+      required: [true, "Deadline is required"],
     },
-    coverImageUrl:{
+    coverImage: {
       type: String,
-      trim: true
-    },
-    
-    creatorId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: [true, "Campaign creator is required"],
+      required: [true, "Cover image is required"],
     },
     status: {
       type: String,
-      enum: {
-        values: ["pending", "approved", "rejected"],
-        message: "Invalid campaign status",
-      },
+      enum: ["pending", "approved", "rejected", "completed"],
       default: "pending",
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
+    urgencyLevel: {
+      type: String,
+      enum: ["normal", "critical", "surgery"],
+      default: "normal",
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
+    creator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
+    updates: [updateSchema],
+    donations: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Donation",
+      },
+    ],
   },
-  {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-}
+  { timestamps: true }
 );
 
-campaignSchema.virtual("progressPercentage").get(function () {
-  if (!this.goalAmount || this.goalAmount <= 0) {
-    return 0;
-  }
+campaignSchema.index({ status: 1, urgencyLevel: 1 });
+campaignSchema.index({ status: 1, createdAt: -1 });
+campaignSchema.index({ status: 1, deadline: 1 });
+campaignSchema.index({ status: 1, raisedAmount: -1 });
+campaignSchema.index({ status: 1, creator: 1 });
 
-  return Math.min((this.raisedAmount / this.goalAmount) * 100, 100);
-});
-
-export { allowedCategories };
-export const CampaignModel = model("Campaign", campaignSchema);
+export default mongoose.model("Campaign", campaignSchema);

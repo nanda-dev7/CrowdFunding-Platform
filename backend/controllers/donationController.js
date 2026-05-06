@@ -1,5 +1,5 @@
 import Donation from "../models/DonationModel.js";
-import { CampaignModel } from "../models/CampaignModel.js";
+import Campaign from "../models/CampaignModel.js";
 import User from "../models/UserModel.js";
 import razorpay from "../config/razorpay.js";
 import verifyRazorpaySignature from "../utils/verifyRazorpaySignature.js";
@@ -37,7 +37,7 @@ export const createOrder = async (req, res) => {
     }
 
     // Check if campaign exists
-    const campaign = await CampaignModel.findById(campaignId);
+    const campaign = await Campaign.findById(campaignId);
     if (!campaign) {
       return sendResponse(res, 404, false, "Campaign not found");
     }
