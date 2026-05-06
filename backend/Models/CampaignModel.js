@@ -1,92 +1,94 @@
-import { Schema, model } from "mongoose";
+const mongoose = require("mongoose");
 
+// ─── Sub-schema: timeline update ────────────────────────────────────────────
+// Used by Member 2's addTimelineUpdate and Member 5's campaign_update notification
+const updateSchema = new mongoose.Schema(
+  {
+    stage: {
+      type: String,
+      enum: ["before", "during", "after"],
+      required: true,
+    },
+    text: { type: String, required: true },
+    image: { type: String, default: null },
+    date: { type: Date, default: Date.now },
+  },
+  { _id: true }
+);
 
-const allowedCategories = [
-  "Medical",
-  "Education",
-  "Startup",
-  "Social Cause",
-  "Environment",
-  "Animal Welfare",
-  "Emergency Relief",
-];
-
-const campaignSchema = new Schema({
+// ─── Main schema ─────────────────────────────────────────────────────────────
+const campaignSchema = new mongoose.Schema(
+  {
     title: {
       type: String,
-      required: [true, "Campaign title is required"],
+      required: [true, "Title is required"],
       trim: true,
-      minlength: [3, "Campaign title must be at least 3 characters"],
-      maxlength: [120, "Campaign title cannot exceed 120 characters"],
     },
     description: {
       type: String,
-      required: [true, "Campaign description is required"],
-      trim: true,
-      minlength: [10, "Campaign description must be at least 10 characters"],
+      required: [true, "Description is required"],
     },
+    // Member 5 donor dashboard: counts Emergency category for emergencyRescuesSupported
     category: {
       type: String,
-      required: [true, "Campaign category is required"],
-      enum: {
-        values: allowedCategories,
-        message: "Invalid campaign category",
-      },
+      enum: ["Emergency", "Medical", "Shelter", "Feeding"],
+      required: [true, "Category is required"],
     },
     goalAmount: {
       type: Number,
-      required: [true, "Funding goal amount is required"],
-      min: [1, "Goal amount must be greater than 0"],
+      required: [true, "Goal amount is required"],
+      min: [1, "Goal amount must be positive"],
     },
+    // Incremented by Member 3 on donation confirm
     raisedAmount: {
       type: Number,
       default: 0,
-      min: [0, "Raised amount cannot be negative"],
+      min: 0,
     },
     deadline: {
       type: Date,
-      required: [true, "Campaign deadline is required"],
+      required: [true, "Deadline is required"],
     },
-    coverImageUrl:{
+    coverImage: {
       type: String,
-      trim: true
+      required: [true, "Cover image is required"],
     },
-    
-    creatorId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: [true, "Campaign creator is required"],
-    },
+    // Member 4 admin controls: approve / reject / complete
     status: {
       type: String,
-      enum: {
-        values: ["pending", "approved", "rejected"],
-        message: "Invalid campaign status",
-      },
+      enum: ["pending", "approved", "rejected", "completed"],
       default: "pending",
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
+    // Member 4 admin: mark urgent; Member 2: filter + sort by urgency
+    urgencyLevel: {
+      type: String,
+      enum: ["normal", "critical", "surgery"],
+      default: "normal",
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
+    // Member 1 User._id — populated in getCampaignById
+    creator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
+    // Member 2: timeline updates array (before / during / after)
+    updates: [updateSchema],
+    // Member 3: pushed on donation confirm; Member 5 dashboard: donor count
+    donations: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Donation",
+      },
+    ],
   },
-  {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-}
+  { timestamps: true }
 );
 
-campaignSchema.virtual("progressPercentage").get(function () {
-  if (!this.goalAmount || this.goalAmount <= 0) {
-    return 0;
-  }
+// ─── Indexes ──────────────────────────────────────────────────────────────────
+campaignSchema.index({ status: 1, urgencyLevel: 1 });   // listing + urgent filter
+campaignSchema.index({ status: 1, createdAt: -1 });      // newest sort
+campaignSchema.index({ status: 1, deadline: 1 });        // ending-soon sort
+campaignSchema.index({ status: 1, raisedAmount: -1 });   // most-funded sort
+campaignSchema.index({ status: 1, creator: 1 });         // campaigner dashboard (M5)
 
-  return Math.min((this.raisedAmount / this.goalAmount) * 100, 100);
-});
-
-export { allowedCategories };
-export const CampaignModel = model("Campaign", campaignSchema);
+module.exports = mongoose.model("Campaign", campaignSchema);
