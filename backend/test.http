@@ -62,3 +62,23 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiM
 ### Get Donation Details
 GET http://localhost:5000/api/donations/<your_donation_id>
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
+
+
+
+### Send OTP
+POST http://localhost:5000/api/auth/send-otp
+Content-Type: application/json
+
+{
+  "email": "test@gmail.com"
+}
+
+
+### Verify OTP
+POST http://localhost:5000/api/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "test@gmail.com",
+  "otp": "123456"
+}
