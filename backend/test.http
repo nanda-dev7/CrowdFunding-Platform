@@ -17,9 +17,10 @@ Content-Type: application/json
   "password": "pawan@45678"
 }
 
-###LOGOUT
+### LOGOUT
 POST http://localhost:5000/api/logout
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MDYwMCwiZXhwIjoxNzc4MDkxNTAwfQ.PUS9ZeQ4r06t2FwJrDJGXIirBvTw3mRSUPNA-xNbzrE
 
 ### Refresh Token
 POST http://localhost:5000/api/refresh-token
@@ -33,11 +34,25 @@ Content-Type: application/json
 
 ### Get Profile
 GET http://localhost:5000/api/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MDYwMCwiZXhwIjoxNzc4MDkxNTAwfQ.PUS9ZeQ4r06t2FwJrDJGXIirBvTw3mRSUPNA-xNbzrE
+
+### Create Campaign
+POST http://localhost:5000/api/campaigns
+Authorization: Bearer <campaigner_access_token>
+
+title=Help Injured Dog
+description=Need urgent surgery support for rescued dog
+goalAmount=50000
+category=Medical
+location=Hyderabad
+urgencyLevel=critical
+coverImage=@./fixtures/dog.jpg
+
+
 ### Create Donation Order
 POST http://localhost:5000/api/donations/create-order
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MDYwMCwiZXhwIjoxNzc4MDkxNTAwfQ.PUS9ZeQ4r06t2FwJrDJGXIirBvTw3mRSUPNA-xNbzrE
 
 {
   "campaignId": "<your_campaign_id>",
@@ -81,4 +96,83 @@ Content-Type: application/json
 {
   "email": "test@gmail.com",
   "otp": "123456"
+}
+
+
+### Apply Campaigner Request
+POST http://localhost:5000/api/campaigner/apply
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MTIzMiwiZXhwIjoxNzc4MDkyMTMyfQ.ibtfCeYhrzCAozXaISj_qjFGp_7bD9q8vUPHE7kS9W0
+
+{
+  "fullName": "Pawan Kumar",
+  "contact": "+91 9876543210",
+  "organization": "Pawan Foundation",
+  "description": "I would like to become a verified campaigner.",
+  "documentUrl": "https://example.com/sample-document.pdf"
+}
+
+
+### Get Campaigner Request Status
+GET http://localhost:5000/api/campaigner/status
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MjMyMywiZXhwIjoxNzc4MDkzMjIzfQ.Bw-wtHxNqj-hngre6spyLTjSVZ-vuoZnu2r4CPVbCBw
+
+
+### Admin: Get Campaigner Requests
+GET http://localhost:5000/api/admin/campaigner-requests
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MjMyMywiZXhwIjoxNzc4MDkzMjIzfQ.Bw-wtHxNqj-hngre6spyLTjSVZ-vuoZnu2r4CPVbCBw
+
+
+### Admin: Approve Campaigner Request
+PUT http://localhost:5000/api/admin/campaigner/<request_id>/approve
+Authorization: Bearer <admin_access_token>
+
+
+### Admin: Reject Campaigner Request
+PUT http://localhost:5000/api/admin/campaigner/<request_id>/reject
+Authorization: Bearer <admin_access_token>
+
+
+### Admin: Get Pending Campaigns
+GET http://localhost:5000/api/admin/campaigns/pending
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MjMyMywiZXhwIjoxNzc4MDkzMjIzfQ.Bw-wtHxNqj-hngre6spyLTjSVZ-vuoZnu2r4CPVbCBw
+
+
+### Admin: Approve Campaign
+PUT http://localhost:5000/api/admin/campaigns/<campaign_id>/approve
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MjMyMywiZXhwIjoxNzc4MDkzMjIzfQ.Bw-wtHxNqj-hngre6spyLTjSVZ-vuoZnu2r4CPVbCBw
+
+
+### Admin: Reject Campaign
+PUT http://localhost:5000/api/admin/campaigns/<campaign_id>/reject
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MjMyMywiZXhwIjoxNzc4MDkzMjIzfQ.Bw-wtHxNqj-hngre6spyLTjSVZ-vuoZnu2r4CPVbCBw
+
+
+### Admin: Update Campaign Urgency
+PUT http://localhost:5000/api/admin/campaigns/<campaign_id>/urgent
+Authorization: Bearer <admin_access_token>
+Content-Type: application/json
+
+{
+  "urgencyLevel": "critical"
+}
+
+
+### Admin: Get Stats
+GET http://localhost:5000/api/admin/stats
+Authorization: Bearer <admin_access_token>
+
+
+### Admin: Get Users
+GET http://localhost:5000/api/admin/users
+Authorization: Bearer <admin_access_token>
+
+
+### Admin: Update User Role
+PUT http://localhost:5000/api/admin/users/<user_id>/role
+Authorization: Bearer <admin_access_token>
+Content-Type: application/json
+
+{
+  "role": "campaigner"
 }
