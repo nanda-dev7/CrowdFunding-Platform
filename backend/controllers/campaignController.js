@@ -1,6 +1,9 @@
-import Campaign from "../models/CampaignModel.js";
+import mongoose from "mongoose";
+import Campaign from "../Models/CampaignModel.js";
 import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 import createNotification from "../controllers/notification.controller.js";
+
+const { isValidObjectId } = mongoose;
 
 const SORT_MAP = {
   "most-funded": { raisedAmount: -1 },
@@ -59,6 +62,10 @@ export const getUrgentCampaigns = async (req, res) => {
  */
 export const getCampaignById = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ success: false, message: "Invalid campaign id" });
+    }
+
     const campaign = await Campaign.findById(req.params.id)
       .populate("creator", "name email")
       .populate({
@@ -149,6 +156,10 @@ export const createCampaign = async (req, res) => {
  */
 export const editCampaign = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ success: false, message: "Invalid campaign id" });
+    }
+
     const campaign = await Campaign.findById(req.params.id);
     if (!campaign) {
       return res
@@ -198,6 +209,10 @@ export const editCampaign = async (req, res) => {
  */
 export const addTimelineUpdate = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ success: false, message: "Invalid campaign id" });
+    }
+
     // Populate donations → donor so we can read each donor's _id for notifications
     const campaign = await Campaign.findById(req.params.id).populate({
       path: "donations",

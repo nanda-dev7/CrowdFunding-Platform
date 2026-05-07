@@ -1,8 +1,11 @@
-import Donation from "../models/DonationModel.js";
-import Campaign from "../models/CampaignModel.js";
-import User from "../models/UserModel.js";
+import mongoose from "mongoose";
+import Donation from "../Models/DonationModel.js";
+import Campaign from "../Models/CampaignModel.js";
+import User from "../Models/UserModel.js";
 import razorpay from "../config/razorpay.js";
 import verifyRazorpaySignature from "../utils/verifyRazorpaySignature.js";
+
+const { isValidObjectId } = mongoose;
 
 // Helper function to send response
 const sendResponse = (res, statusCode, success, message, data = {}) => {
@@ -37,6 +40,10 @@ export const createOrder = async (req, res) => {
     }
 
     // Check if campaign exists
+    if (!isValidObjectId(campaignId)) {
+      return sendResponse(res, 400, false, "Invalid campaign id");
+    }
+
     const campaign = await Campaign.findById(campaignId);
     if (!campaign) {
       return sendResponse(res, 404, false, "Campaign not found");
@@ -108,6 +115,10 @@ export const confirmDonation = async (req, res) => {
     }
 
     // Find pending donation
+    if (!isValidObjectId(donationId)) {
+      return sendResponse(res, 400, false, "Invalid donation id");
+    }
+
     const donation = await Donation.findById(donationId).populate(
       "campaign donor"
     );
@@ -211,6 +222,10 @@ export const getDonationById = async (req, res) => {
   try {
     const { donationId } = req.params;
     const userId = req.user._id || req.user.id;
+
+    if (!isValidObjectId(donationId)) {
+      return sendResponse(res, 400, false, "Invalid donation id");
+    }
 
     const donation = await Donation.findById(donationId)
       .populate({
