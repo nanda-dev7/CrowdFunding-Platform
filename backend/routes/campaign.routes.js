@@ -1,62 +1,116 @@
+// import express from "express";
+// import {
+//   getCampaigns,
+//   getUrgentCampaigns,
+//   getCampaignById,
+//   createCampaign,
+//   updateCampaign,
+//   addCampaignUpdate,
+// } from "../controllers/campaign.controller.js";
+// import authMiddleware from "../middleware/auth.middleware.js";
+// import roleMiddleware from "../middleware/role.middleware.js";
+// import upload from "../middleware/upload.middleware.js";
+
+// const router = express.Router();
+
+// // Route to get campaigns
+// router.get("/", getCampaigns);
+// // IMPORTANT: /urgent must be defined BEFORE /:id
+// router.get("/urgent", getUrgentCampaigns);
+// router.get("/:id", getCampaignById);
+
+// // Protected routes
+// router.post(
+//   "/",
+//   authMiddleware,
+//   roleMiddleware("campaigner", "admin"),
+//   upload.single("coverImage"),
+//   createCampaign
+// );
+
+// router.put(
+//   "/:id",
+//   authMiddleware,
+//   roleMiddleware("campaigner", "admin"),
+//   upload.single("coverImage"),
+//   updateCampaign
+// );
+
+// router.post(
+//   "/:id/updates",
+//   authMiddleware,
+//   roleMiddleware("campaigner", "admin"),
+//   upload.single("image"),
+//   addCampaignUpdate
+// );
+
+// export default router;
+
+
+
+
 import express from "express";
 import {
   getCampaigns,
   getUrgentCampaigns,
   getCampaignById,
   createCampaign,
-  editCampaign,
-  addTimelineUpdate,
-} from "../controllers/campaignController.js";
-import { protect, requireRole } from "../middleware/auth.middleware.js";
+  updateCampaign,
+  addCampaignUpdate,
+  uploadMedicalDocument,
+  deleteMedicalDocument,
+} from "../controllers/campaign.controller.js";
+import authMiddleware from "../middleware/auth.middleware.js";
+import roleMiddleware from "../middleware/role.middleware.js";
 import upload from "../middleware/upload.middleware.js";
 
 const router = express.Router();
 
-// ─── Public routes ────────────────────────────────────────────────────────────
-
-// GET /api/campaigns
-// ?category=Emergency|Medical|Shelter|Feeding
-// ?urgencyLevel=normal|critical|surgery
-// ?sort=newest|most-funded|ending-soon
+// ── Public routes ─────────────────────────────────────────────────────────────
 router.get("/", getCampaigns);
-
-// GET /api/campaigns/urgent
-// ⚠️  MUST be above /:id — otherwise Express matches "urgent" as a Mongo ObjectId
-//     and getCampaignById throws a CastError.
+// IMPORTANT: /urgent must be before /:id
 router.get("/urgent", getUrgentCampaigns);
-
-// GET /api/campaigns/:id
 router.get("/:id", getCampaignById);
 
-// ─── Protected routes ─────────────────────────────────────────────────────────
-
-// POST /api/campaigns  — create (campaigner or admin)
-// upload.single("coverImage") pipes the file buffer into req.file
+// ── Protected routes ──────────────────────────────────────────────────────────
 router.post(
   "/",
-  protect,
-  requireRole("campaigner", "admin"),
+  authMiddleware,
+  roleMiddleware("campaigner", "admin"),
   upload.single("coverImage"),
   createCampaign
 );
 
-// PUT /api/campaigns/:id  — edit (creator or admin, checked inside controller)
 router.put(
   "/:id",
-  protect,
-  requireRole("campaigner", "admin"),
+  authMiddleware,
+  roleMiddleware("campaigner", "admin"),
   upload.single("coverImage"),
-  editCampaign
+  updateCampaign
 );
 
-// POST /api/campaigns/:id/updates  — timeline update (creator or admin)
-// Optional image field name: "image"
 router.post(
   "/:id/updates",
-  protect,
-  requireRole("campaigner", "admin"),
+  authMiddleware,
+  roleMiddleware("campaigner", "admin"),
   upload.single("image"),
-  addTimelineUpdate
+  addCampaignUpdate
+);
+
+// Medical documents
+router.post(
+  "/:id/medical-documents",
+  authMiddleware,
+  roleMiddleware("campaigner", "admin"),
+  upload.single("document"),
+  uploadMedicalDocument
+);
+
+router.delete(
+  "/:campaignId/medical-documents/:documentId",
+  authMiddleware,
+  roleMiddleware("campaigner", "admin"),
+  deleteMedicalDocument
 );
 
 export default router;

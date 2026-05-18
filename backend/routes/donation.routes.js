@@ -1,25 +1,36 @@
-import express from "express";
-import { protect } from "../middleware/auth.middleware.js";
+// import express from "express";
+// import {
+//   createOrder,
+//   confirmDonation,
+//   getMyDonations,
+//   getMyCoupons,
+// } from "../controllers/donation.controller.js";
+// import authMiddleware from "../middleware/auth.middleware.js";
 
+// const router = express.Router();
+
+// router.post("/create-order", authMiddleware, createOrder);
+// router.post("/confirm", authMiddleware, confirmDonation);
+
+// // User donation history
+// router.get("/me", authMiddleware, getMyDonations);
+
+// export default router;
+
+
+
+import express from "express";
 import {
   createOrder,
   confirmDonation,
-  getUserDonations,
-  getDonationById,
-} from "../controllers/donationController.js";
+  getMyDonations,
+} from "../controllers/donation.controller.js";
+import authMiddleware from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// Create a new donation order
-router.post("/create-order", protect, createOrder);
-
-// Confirm payment
-router.post("/confirm", protect, confirmDonation);
-
-// Get donation by ID
-router.get("/:donationId", protect, getDonationById);
-
-// Get user donations
-router.get("/", protect, getUserDonations);
+router.post("/create-order", authMiddleware, createOrder);
+router.post("/confirm", authMiddleware, confirmDonation);
+router.get("/me", authMiddleware, getMyDonations);
 
 export default router;

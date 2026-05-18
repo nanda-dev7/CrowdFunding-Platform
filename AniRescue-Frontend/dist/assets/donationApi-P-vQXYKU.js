@@ -1,0 +1,1 @@
+import{k as a}from"./index-BjE6x52J.js";const e=t=>t?new Intl.DateTimeFormat("en-IN",{day:"2-digit",month:"short",year:"numeric"}).format(new Date(t)):"Not set",s=t=>a.post("/donations/create-order",t).then(o=>o.data),r=t=>a.post("/donations/confirm",t).then(o=>o.data),i=()=>a.get("/users/me/donations").then(t=>t.data);export{r as a,s as c,e as f,i as g};

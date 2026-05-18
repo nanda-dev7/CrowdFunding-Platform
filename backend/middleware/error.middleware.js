@@ -1,44 +1,43 @@
 const errorMiddleware = (err, req, res, next) => {
-  let error = { ...err };
-  error.message = err.message;
+  console.error(`[ERROR] ${req.method} ${req.originalUrl} →`, err.message);
 
-  // Log error
-  console.error(err);
-
-  // Mongoose bad ObjectId
-  if (err.name === 'CastError') {
-    const message = 'Resource not found';
-    error = { message, status: 404 };
+  // Mongoose validation error
+  if (err.name === "ValidationError") {
+    const messages = Object.values(err.errors).map((e) => e.message);
+    return res.status(400).json({ message: "Validation failed", errors: messages });
   }
 
   // Mongoose duplicate key
   if (err.code === 11000) {
-    const message = 'Duplicate field value entered';
-    error = { message, status: 400 };
+    const field = Object.keys(err.keyValue)[0];
+    return res.status(409).json({ message: `${field} already exists` });
   }
 
-  // Mongoose validation error
-  if (err.name === 'ValidationError') {
-    const message = Object.values(err.errors).map(val => val.message).join(', ');
-    error = { message, status: 400 };
+  // Mongoose cast error (invalid ObjectId)
+  if (err.name === "CastError") {
+    return res.status(400).json({ message: `Invalid ${err.path}: ${err.value}` });
+  }
+
+  // Multer errors
+  if (err.name === "MulterError") {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({ message: "File too large. Maximum size is 5MB" });
+    }
+    return res.status(400).json({ message: err.message });
   }
 
   // JWT errors
-  if (err.name === 'JsonWebTokenError') {
-    const message = 'Invalid token';
-    error = { message, status: 401 };
+  if (err.name === "JsonWebTokenError") {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+  if (err.name === "TokenExpiredError") {
+    return res.status(401).json({ message: "Token expired" });
   }
 
-  if (err.name === 'TokenExpiredError') {
-    const message = 'Token expired';
-    error = { message, status: 401 };
-  }
+  const statusCode = err.statusCode || err.status || 500;
+  const message = err.message || "Internal server error";
 
-  res.status(error.status || 500).json({
-    success: false,
-    message: error.message || 'Server Error',
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-  });
+  res.status(statusCode).json({ message });
 };
 
 export default errorMiddleware;

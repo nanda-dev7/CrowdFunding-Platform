@@ -1,176 +1,198 @@
+﻿@baseUrl = http://localhost:5000
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmM1ZTYzY2UxNTI4YzNjYTJhNTIyYiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3ODIyNjQ4MywiZXhwIjoxNzc4MjI3MzgzfQ.UPiJl3JySD2hUGMCc9acKVfx2SvVhH1iJD4nQFSQTgM
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmM1ZTYzY2UxNTI4YzNjYTJhNTIyYiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3ODIyNDgyOSwiZXhwIjoxNzc4MjI1NzI5fQ.4BdVntJVht3YhQhdTi7qao4ghsozclir1RYdLjx7bFM
+@campaignId = 69fd8271893562a80e044329
+@donationId = <donation_id_here>
+@campaignerRequestId = <campaigner_request_id_here>
+@notificationId = <notification_id_here>
+@userId = <user_id_here>
+
+### Health Check
+GET {{baseUrl}}/health
+
 ### Register User
-POST http://localhost:5000/api/register
+POST {{baseUrl}}/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "Pawan Kumar",
-  "email": "pawan7@gmail.com",
-  "password": "pawan@45678"
+  "name": "Test donor1",
+  "email": "testdonor1@example.com",
+  "password": "donor1123!",
+  "role": "donor"
 }
 
 ### Login User
-POST http://localhost:5000/api/login
+POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "pawan7@gmail.com",
-  "password": "pawan@45678"
+  "email": "testadmin1@example.com",
+  "password": "admin1123!"
 }
 
-### LOGOUT
-POST http://localhost:5000/api/logout
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MDYwMCwiZXhwIjoxNzc4MDkxNTAwfQ.PUS9ZeQ4r06t2FwJrDJGXIirBvTw3mRSUPNA-xNbzrE
+### Get Current User
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{authToken}}
 
 ### Refresh Token
-POST http://localhost:5000/api/refresh-token
+POST {{baseUrl}}/api/auth/refresh
 Content-Type: application/json
 
 {
-  "refreshToken": "your_refresh_token_here"
+  "refreshToken": "{{refreshToken}}"
 }
 
+### Logout User
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{authToken}}
 
+### List Campaigns
+GET {{baseUrl}}/api/campaigns
 
-### Get Profile
-GET http://localhost:5000/api/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MDYwMCwiZXhwIjoxNzc4MDkxNTAwfQ.PUS9ZeQ4r06t2FwJrDJGXIirBvTw3mRSUPNA-xNbzrE
+### List Urgent Campaigns
+GET {{baseUrl}}/api/campaigns/urgent
 
-### Create Campaign
-POST http://localhost:5000/api/campaigns
-Authorization: Bearer <campaigner_access_token>
+### Get Campaign by ID
+GET {{baseUrl}}/api/campaigns/{{campaignId}}
 
-title=Help Injured Dog
-description=Need urgent surgery support for rescued dog
-goalAmount=50000
-category=Medical
-location=Hyderabad
+### Create Campaign (Campaigner/Admin only)
+POST {{baseUrl}}/api/campaigns
+Authorization: Bearer {{authToken}}
+
+@title=Test Campaign2
+@description=This is a sample campaign2 created during backend testing.
+@goalAmount=20000
+@deadline=2026-12-30
+@category=Emergency
+@coverImage=./assets/test-image.jpg
+
+### Update Campaign (Campaigner/Admin only)
+PUT {{baseUrl}}/api/campaigns/{{campaignId}}
+Authorization: Bearer {{authToken}}
+
+title=Updated Campaign Title
+description=Updated description for the campaign.
 urgencyLevel=critical
-coverImage=@./fixtures/dog.jpg
+coverImage=@./assets/new-cover.jpg
 
+### Add Campaign Update (Campaigner/Admin only)
+POST {{baseUrl}}/api/campaigns/{{campaignId}}/updates
+Authorization: Bearer {{authToken}}
+
+@stage=during
+@text=First update for campaign testing.
+@image=./assets/update-image.jpg
+
+
+### Upload Medical Document (Campaigner/Admin only)
+POST {{baseUrl}}/api/campaigns/{{campaignId}}/medical-documents
+Authorization: Bearer {{authToken}}
+
+@document=./assets/medical.pdf
+
+### Delete Medical Document (Campaigner/Admin only)
+DELETE {{baseUrl}}/api/campaigns/{{campaignId}}/medical-documents/<document_id_here>
+Authorization: Bearer {{authToken}}
 
 ### Create Donation Order
-POST http://localhost:5000/api/donations/create-order
+POST {{baseUrl}}/api/donations/create-order
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MDYwMCwiZXhwIjoxNzc4MDkxNTAwfQ.PUS9ZeQ4r06t2FwJrDJGXIirBvTw3mRSUPNA-xNbzrE
 
 {
-  "campaignId": "<your_campaign_id>",
+  "campaignId": "{{campaignId}}",
   "amount": 500
 }
 
 ### Confirm Donation Payment
-POST http://localhost:5000/api/donations/confirm
+POST {{baseUrl}}/api/donations/confirm
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
 
 {
-  "donationId": "<your_donation_id>",
+  "donationId": "{{donationId}}",
   "razorpayPaymentId": "<razorpay_payment_id>",
   "razorpaySignature": "<razorpay_signature>"
 }
 
-### Get Donation History
-GET http://localhost:5000/api/donations
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
+### Get My Donations
+GET {{baseUrl}}/api/donations/me
+Authorization: Bearer {{authToken}}
 
-### Get Donation Details
-GET http://localhost:5000/api/donations/<your_donation_id>
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmFjMTNiMjFiNmI3MzU4NDJkMzE2OCIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsImlhdCI6MTc3ODA0MTMyNywiZXhwIjoxNzc4MTI3NzI3fQ.5v02rgUgCUGabKoqfJWPUuitHliFkyLqtnp_mCfzroY
+### Get Notifications
+GET {{baseUrl}}/api/notifications
+Authorization: Bearer {{authToken}}
 
+### Mark Notification as Read
+PUT {{baseUrl}}/api/notifications/{{notificationId}}/read
+Authorization: Bearer {{authToken}}
 
+### Apply as Campaigner
+POST {{baseUrl}}/api/campaigner/apply
+Authorization: Bearer {{authToken}}
 
-### Send OTP
-POST http://localhost:5000/api/auth/send-otp
-Content-Type: application/json
+@bio=I would like to become a campaigner to support causes.
+@document=./assets/document.pdf
 
-{
-  "email": "test@gmail.com"
-}
+### Get Campaigner Status
+GET {{baseUrl}}/api/campaigner/status
+Authorization: Bearer {{authToken}}
 
+### Get Campaigner Dashboard
+GET {{baseUrl}}/api/campaigner/dashboard
+Authorization: Bearer {{authToken}}
 
-### Verify OTP
-POST http://localhost:5000/api/auth/verify-otp
-Content-Type: application/json
+### Get My Coupons
+GET {{baseUrl}}/api/users/me/coupons
+Authorization: Bearer {{authToken}}
 
-{
-  "email": "test@gmail.com",
-  "otp": "123456"
-}
+### Get Donor Dashboard
+GET {{baseUrl}}/api/users/me/dashboard
+Authorization: Bearer {{authToken}}
 
-
-### Apply Campaigner Request
-POST http://localhost:5000/api/campaigner/apply
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MTIzMiwiZXhwIjoxNzc4MDkyMTMyfQ.ibtfCeYhrzCAozXaISj_qjFGp_7bD9q8vUPHE7kS9W0
-
-{
-  "fullName": "Pawan Kumar",
-  "contact": "+91 9876543210",
-  "organization": "Pawan Foundation",
-  "description": "I would like to become a verified campaigner.",
-  "documentUrl": "https://example.com/sample-document.pdf"
-}
-
-
-### Get Campaigner Request Status
-GET http://localhost:5000/api/campaigner/status
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MjMyMywiZXhwIjoxNzc4MDkzMjIzfQ.Bw-wtHxNqj-hngre6spyLTjSVZ-vuoZnu2r4CPVbCBw
-
+### Get My Donations from Dashboard
+GET {{baseUrl}}/api/users/me/donations
+Authorization: Bearer {{authToken}}
 
 ### Admin: Get Campaigner Requests
-GET http://localhost:5000/api/admin/campaigner-requests
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MjMyMywiZXhwIjoxNzc4MDkzMjIzfQ.Bw-wtHxNqj-hngre6spyLTjSVZ-vuoZnu2r4CPVbCBw
+GET {{baseUrl}}/api/admin/campaigner-requests
+Authorization: Bearer {{adminToken}}
 
+### Admin: Approve Campaigner
+PUT {{baseUrl}}/api/admin/campaigner/{{campaignerRequestId}}/approve
+Authorization: Bearer {{adminToken}}
 
-### Admin: Approve Campaigner Request
-PUT http://localhost:5000/api/admin/campaigner/<request_id>/approve
-Authorization: Bearer <admin_access_token>
-
-
-### Admin: Reject Campaigner Request
-PUT http://localhost:5000/api/admin/campaigner/<request_id>/reject
-Authorization: Bearer <admin_access_token>
-
+### Admin: Reject Campaigner
+PUT {{baseUrl}}/api/admin/campaigner/{{campaignerRequestId}}/reject
+Authorization: Bearer {{adminToken}}
 
 ### Admin: Get Pending Campaigns
-GET http://localhost:5000/api/admin/campaigns/pending
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MjMyMywiZXhwIjoxNzc4MDkzMjIzfQ.Bw-wtHxNqj-hngre6spyLTjSVZ-vuoZnu2r4CPVbCBw
-
+GET {{baseUrl}}/api/admin/campaigns/pending
+Authorization: Bearer {{adminToken}}
 
 ### Admin: Approve Campaign
-PUT http://localhost:5000/api/admin/campaigns/<campaign_id>/approve
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MjMyMywiZXhwIjoxNzc4MDkzMjIzfQ.Bw-wtHxNqj-hngre6spyLTjSVZ-vuoZnu2r4CPVbCBw
-
+PUT {{baseUrl}}/api/admin/campaigns/{{campaignId}}/approve
+Authorization: Bearer {{adminToken}}
 
 ### Admin: Reject Campaign
-PUT http://localhost:5000/api/admin/campaigns/<campaign_id>/reject
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmI4MjUzZGI4OGVmNDBiZDUzYjViMSIsImVtYWlsIjoicGF3YW43QGdtYWlsLmNvbSIsInJvbGUiOiJkb25vciIsImlhdCI6MTc3ODA5MjMyMywiZXhwIjoxNzc4MDkzMjIzfQ.Bw-wtHxNqj-hngre6spyLTjSVZ-vuoZnu2r4CPVbCBw
+PUT {{baseUrl}}/api/admin/campaigns/{{campaignId}}/reject
+Authorization: Bearer {{adminToken}}
 
-
-### Admin: Update Campaign Urgency
-PUT http://localhost:5000/api/admin/campaigns/<campaign_id>/urgent
-Authorization: Bearer <admin_access_token>
-Content-Type: application/json
-
-{
-  "urgencyLevel": "critical"
-}
-
+### Admin: Mark Campaign Urgent
+PUT {{baseUrl}}/api/admin/campaigns/{{campaignId}}/urgent
+Authorization: Bearer {{adminToken}}
 
 ### Admin: Get Stats
-GET http://localhost:5000/api/admin/stats
-Authorization: Bearer <admin_access_token>
+GET {{baseUrl}}/api/admin/stats
+Authorization: Bearer {{adminToken}}
 
+### Admin: Get All Users
+GET {{baseUrl}}/api/admin/users
+Authorization: Bearer {{adminToken}}
 
-### Admin: Get Users
-GET http://localhost:5000/api/admin/users
-Authorization: Bearer <admin_access_token>
-
-
-### Admin: Update User Role
-PUT http://localhost:5000/api/admin/users/<user_id>/role
-Authorization: Bearer <admin_access_token>
+### Admin: Change User Role
+PUT {{baseUrl}}/api/admin/users/{{userId}}/role
+Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
 {

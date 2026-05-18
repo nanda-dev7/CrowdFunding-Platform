@@ -1,33 +1,41 @@
 import express from "express";
-import { protect, requireRole } from "../middleware/auth.middleware.js";
 import {
   getCampaignerRequests,
-  approveCampaignerRequest,
-  rejectCampaignerRequest,
+  approveCampaigner,
+  rejectCampaigner,
   getPendingCampaigns,
   approveCampaign,
   rejectCampaign,
-  updateCampaignUrgency,
+  markCampaignUrgent,
   getAdminStats,
-  getUsers,
-  updateUserRole,
-} from "../controllers/adminController.js";
+  getAllUsers,
+  changeUserRole,
+} from "../controllers/admin.controller.js";
+import authMiddleware from "../middleware/auth.middleware.js";
+import roleMiddleware from "../middleware/role.middleware.js";
 
 const router = express.Router();
 
-router.use(protect, requireRole("admin"));
+// All admin routes require auth + admin role
+router.use(authMiddleware);
+router.use(roleMiddleware("admin"));
 
+// Campaigner requests
 router.get("/campaigner-requests", getCampaignerRequests);
-router.put("/campaigner/:id/approve", approveCampaignerRequest);
-router.put("/campaigner/:id/reject", rejectCampaignerRequest);
+router.put("/campaigner/:id/approve", approveCampaigner);
+router.put("/campaigner/:id/reject", rejectCampaigner);
 
+// Campaign management
 router.get("/campaigns/pending", getPendingCampaigns);
 router.put("/campaigns/:id/approve", approveCampaign);
 router.put("/campaigns/:id/reject", rejectCampaign);
-router.put("/campaigns/:id/urgent", updateCampaignUrgency);
+router.put("/campaigns/:id/urgent", markCampaignUrgent);
 
+// Stats
 router.get("/stats", getAdminStats);
-router.get("/users", getUsers);
-router.put("/users/:id/role", updateUserRole);
+
+// Users
+router.get("/users", getAllUsers);
+router.put("/users/:id/role", changeUserRole);
 
 export default router;

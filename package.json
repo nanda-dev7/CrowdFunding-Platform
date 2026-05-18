@@ -1,0 +1,15 @@
+{
+  "name": "pawrescue-root",
+  "version": "1.0.0",
+  "description": "Root project for AniRescue",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "npm run dev --prefix backend",
+    "client": "npm run dev --prefix AniRescue-Frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "npm install --prefix backend && npm install --prefix AniRescue-Frontend && npm run build --prefix AniRescue-Frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

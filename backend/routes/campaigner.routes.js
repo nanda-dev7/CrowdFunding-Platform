@@ -1,21 +1,24 @@
 import express from "express";
-import { protect, requireRole } from "../middleware/auth.middleware.js";
-import upload from "../middleware/upload.middleware.js";
 import {
-  applyCampaigner,
+  applyAsCampaigner,
   getCampaignerStatus,
-} from "../controllers/campaignerController.js";
+} from "../controllers/campaigner.controller.js";
+import { getCampaignerDashboard } from "../controllers/dashboard.controller.js";
+import authMiddleware from "../middleware/auth.middleware.js";
+import roleMiddleware from "../middleware/role.middleware.js";
+import upload from "../middleware/upload.middleware.js";
 
 const router = express.Router();
 
-router.post(
-  "/apply",
-  protect,
-  requireRole("donor"),
-  upload.single("document"),
-  applyCampaigner
-);
+// All routes require auth
+router.use(authMiddleware);
 
-router.get("/status", protect, getCampaignerStatus);
+router.post("/apply", upload.single("document"), applyAsCampaigner);
+router.get("/status", getCampaignerStatus);
+router.get(
+  "/dashboard",
+  roleMiddleware("campaigner", "admin"),
+  getCampaignerDashboard
+);
 
 export default router;
