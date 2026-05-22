@@ -53,6 +53,23 @@ const medicalDocumentSchema = new mongoose.Schema(
   { _id: true }
 );
 
+const expenseSchema = new mongoose.Schema(
+  {
+    label: {
+      type: String,
+      required: [true, "Expense label is required"],
+      trim: true,
+    },
+    percentage: {
+      type: Number,
+      required: [true, "Expense percentage is required"],
+      min: [0, "Percentage must be at least 0"],
+      max: [100, "Percentage must be at most 100"],
+    },
+  },
+  { _id: true }
+);
+
 const campaignSchema = new mongoose.Schema(
   {
     title: {
@@ -106,6 +123,7 @@ const campaignSchema = new mongoose.Schema(
     },
     updates: [updateSchema],
     medicalDocuments: [medicalDocumentSchema],
+    expenses: [expenseSchema],
     donations: [
       {
         type: mongoose.Schema.Types.ObjectId,

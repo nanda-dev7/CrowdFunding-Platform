@@ -506,3 +506,49 @@ export const deleteMedicalDocument = async (req, res, next) => {
     next(error);
   }
 };
+
+// PUT /api/campaigns/:id/expenses
+export const updateExpenses = async (req, res, next) => {
+  try {
+    const campaign = await Campaign.findById(req.params.id);
+    if (!campaign) return res.status(404).json({ message: "Campaign not found" });
+
+    const isOwner = campaign.creator.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({ message: "Not authorised to update expenses for this campaign" });
+    }
+
+    const { expenses } = req.body;
+    if (!Array.isArray(expenses) || expenses.length === 0) {
+      return res.status(400).json({ message: "At least one expense entry is required" });
+    }
+
+    // Validate each expense
+    for (const expense of expenses) {
+      if (!expense.label || !expense.label.trim()) {
+        return res.status(400).json({ message: "Each expense must have a label" });
+      }
+      if (expense.percentage == null || expense.percentage < 0 || expense.percentage > 100) {
+        return res.status(400).json({ message: "Each expense percentage must be between 0 and 100" });
+      }
+    }
+
+    // Validate total doesn't exceed 100
+    const total = expenses.reduce((sum, e) => sum + Number(e.percentage), 0);
+    if (total > 100) {
+      return res.status(400).json({ message: `Expense percentages total ${total}% — must not exceed 100%` });
+    }
+
+    campaign.expenses = expenses.map((e) => ({
+      label: e.label.trim(),
+      percentage: Number(e.percentage),
+    }));
+
+    await campaign.save();
+    return res.status(200).json({ message: "Expenses updated", expenses: campaign.expenses });
+  } catch (error) {
+    next(error);
+  }
+};

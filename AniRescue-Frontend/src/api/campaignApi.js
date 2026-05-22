@@ -18,3 +18,5 @@ export const uploadMedicalDocument = (campaignId, formData) =>
     .then((res) => res.data);
 export const deleteMedicalDocument = (campaignId, documentId) =>
   api.delete(`/campaigns/${campaignId}/medical-documents/${documentId}`).then((res) => res.data);
+export const updateExpenses = (campaignId, expenses) =>
+  api.put(`/campaigns/${campaignId}/expenses`, { expenses }).then((res) => res.data);

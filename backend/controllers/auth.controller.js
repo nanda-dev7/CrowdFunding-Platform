@@ -94,8 +94,7 @@ export const login = async (req, res, next) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    user.refreshToken = refreshToken;
-    await user.save();
+    await User.updateOne({ _id: user._id }, { $set: { refreshToken } });
 
     res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS);
 
@@ -145,8 +144,7 @@ export const refreshToken = async (req, res, next) => {
     const newAccessToken = generateAccessToken(user);
     const newRefreshToken = generateRefreshToken(user);
 
-    user.refreshToken = newRefreshToken;
-    await user.save();
+    await User.updateOne({ _id: user._id }, { $set: { refreshToken: newRefreshToken } });
 
     res.cookie("refreshToken", newRefreshToken, COOKIE_OPTIONS);
 
@@ -166,8 +164,7 @@ export const logout = async (req, res, next) => {
         "+refreshToken",
       );
       if (user) {
-        user.refreshToken = null;
-        await user.save();
+        await User.updateOne({ _id: user._id }, { $set: { refreshToken: null } });
       }
     }
 

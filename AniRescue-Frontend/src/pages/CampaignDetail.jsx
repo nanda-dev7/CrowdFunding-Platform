@@ -64,18 +64,22 @@ export default function CampaignDetail() {
               </div>
             </div>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              {[
-                ["Surgery cost", 0.55],
-                ["Medicines", 0.18],
-                ["Food", 0.09],
-                ["Treatment expenses", 0.18],
-              ].map(([label, percent]) => (
-                <div key={label} className="rounded-3xl bg-cream p-4">
-                  <PieChart className="mb-3 text-moss" />
-                  <p className="font-extrabold text-ink">{label}</p>
-                  <p className="text-sm text-bark/60">{formatCurrency((campaign.goalAmount || campaign.goal || 0) * percent)}</p>
-                </div>
-              ))}
+              {(campaign.expenses && campaign.expenses.length > 0) ? (
+                campaign.expenses.map((expense) => (
+                  <div key={expense._id || expense.label} className="rounded-3xl bg-cream p-4">
+                    <PieChart className="mb-3 text-moss" />
+                    <p className="font-extrabold text-ink">{expense.label}</p>
+                    <p className="text-sm text-bark/60">
+                      {formatCurrency((campaign.goalAmount || campaign.goal || 0) * (expense.percentage / 100))}
+                      <span className="ml-1 text-xs text-bark/40">({expense.percentage}%)</span>
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="col-span-2 text-sm text-bark/50">
+                  No expense breakdown has been added yet.
+                </p>
+              )}
             </div>
           </section>
           <CampaignerDetails creator={creator} />

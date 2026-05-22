@@ -20,7 +20,7 @@ export default function Timeline({ updates = [] }) {
             <div className="rounded-3xl bg-cream p-4">
               <div className="mb-2 flex flex-wrap items-center gap-2">
                 <Badge variant={item.stage === "after" ? "success" : item.stage === "during" ? "teal" : "default"}>{(item.stage || "before").toUpperCase()}</Badge>
-                <span className="text-xs font-semibold text-bark/50">{formatDate(item.timestamp || item.createdAt)}</span>
+                <span className="text-xs font-semibold text-bark/50">{formatDate(item.date || item.timestamp || item.createdAt)}</span>
               </div>
               <p className="text-sm leading-6 text-bark/75">{item.text || item.description}</p>
               {item.image && <img src={item.image} alt="" className="mt-3 max-h-72 w-full rounded-2xl object-cover" loading="lazy" />}

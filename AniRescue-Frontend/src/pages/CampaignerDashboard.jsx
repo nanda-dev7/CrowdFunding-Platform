@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart3, FileText, Heart, Plus, Users } from "lucide-react";
@@ -9,12 +10,16 @@ import StatCard from "../components/dashboard/StatCard";
 import AnalyticsChart from "../components/dashboard/AnalyticsChart";
 import MedicalDocumentUploadForm from "../components/forms/MedicalDocumentUploadForm";
 import TimelineUpdateForm from "../components/forms/TimelineUpdateForm";
+import EditCampaignModal from "../components/forms/EditCampaignModal";
+import TransparencyExpenseForm from "../components/forms/TransparencyExpenseForm";
 import { formatCurrency } from "../utils/formatCurrency";
 export default function CampaignerDashboard() {
   const query = useQuery({ queryKey: ["campaigner-dashboard"], queryFn: getCampaignerDashboard, retry: false });
   const data = query.data || {};
   const campaigns = data.campaigns || [];
-  const firstCampaign = campaigns[0];
+
+  const [editingCampaign, setEditingCampaign] = useState(null);
+
   return (
     <DashboardShell
       title="Campaign operations"
@@ -44,7 +49,7 @@ export default function CampaignerDashboard() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Button size="sm" variant="secondary" as={Link} to={`/campaigns/${campaign._id || campaign.id}`}>Analytics</Button>
-                    <Button size="sm" variant="outline">Edit</Button>
+                    <Button size="sm" variant="outline" onClick={() => setEditingCampaign(campaign)}>Edit</Button>
                     <Button size="sm">Upload documents</Button>
                   </div>
                 </div>
@@ -54,14 +59,22 @@ export default function CampaignerDashboard() {
         </div>
         <div className="space-y-6">
           <MedicalDocumentUploadForm campaigns={campaigns} />
-          {firstCampaign && (
+          {campaigns.length > 0 && (
             <div className="rounded-[1.75rem] border border-bark/10 bg-white p-5 shadow-card">
               <h3 className="mb-4 text-lg font-extrabold text-ink">Timeline update</h3>
-              <TimelineUpdateForm campaignId={firstCampaign._id || firstCampaign.id} />
+              <TimelineUpdateForm campaigns={campaigns} />
             </div>
           )}
+          <TransparencyExpenseForm campaigns={campaigns} />
         </div>
       </div>
+
+      {/* Edit Campaign Modal */}
+      <EditCampaignModal
+        campaign={editingCampaign}
+        open={!!editingCampaign}
+        onClose={() => setEditingCampaign(null)}
+      />
     </DashboardShell>
   );
 }

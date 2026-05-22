@@ -59,6 +59,7 @@ import {
   addCampaignUpdate,
   uploadMedicalDocument,
   deleteMedicalDocument,
+  updateExpenses,
 } from "../controllers/campaign.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 import roleMiddleware from "../middleware/role.middleware.js";
@@ -111,6 +112,14 @@ router.delete(
   authMiddleware,
   roleMiddleware("campaigner", "admin"),
   deleteMedicalDocument
+);
+
+// Transparency expenses
+router.put(
+  "/:id/expenses",
+  authMiddleware,
+  roleMiddleware("campaigner", "admin"),
+  updateExpenses
 );
 
 export default router;
