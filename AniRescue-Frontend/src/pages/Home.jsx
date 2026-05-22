@@ -12,7 +12,7 @@ import StatCard from "../components/dashboard/StatCard";
 import { fadeUp, staggerContainer } from "../animations/motionVariants";
 import { formatCurrency } from "../utils/formatCurrency";
 
-const rescueImage = "https://images.unsplash.com/photo-1601758064224-c3c14733a968?auto=format&fit=crop&w=1400&q=80";
+import rescueImage from "../../assets/homepage.jpg";
 const normalizeList = (data) => data?.campaigns || data?.items || data || [];
 
 export default function Home() {
