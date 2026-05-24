@@ -1,4 +1,4 @@
-import CampaignerRequest from "../models/CampaignerRequest.js";
+import CampaignerRequest from "../models/campaignerRequest.js";
 import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 
 // POST /api/campaigner/apply

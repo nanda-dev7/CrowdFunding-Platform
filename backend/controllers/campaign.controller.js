@@ -1,7 +1,7 @@
-// import Campaign from "../models/Campaign.js";
+// import Campaign from "../models/campaign.js";
 // import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 // import createNotification from "../utils/createNotification.js";
-// import Donation from "../models/Donation.js";
+// import Donation from "../models/donation.js";
 
 // // GET /api/campaigns
 // export const getCampaigns = async (req, res, next) => {
@@ -210,10 +210,10 @@
 // };
 
 
-import Campaign from "../models/Campaign.js";
+import Campaign from "../models/campaign.js";
 import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 import createNotification from "../utils/createNotification.js";
-import Donation from "../models/Donation.js";
+import Donation from "../models/donation.js";
 
 // GET /api/campaigns
 export const getCampaigns = async (req, res, next) => {

@@ -1,6 +1,6 @@
-// import Donation from "../models/Donation.js";
-// import Coupon from "../models/Coupon.js";
-// import Campaign from "../models/Campaign.js";
+// import Donation from "../models/donation.js";
+// import Coupon from "../models/coupon.js";
+// import Campaign from "../models/campaign.js";
 
 // const RECENT_LIMIT = 5;
 
@@ -96,8 +96,8 @@
 
 
 
-import Donation from "../models/Donation.js";
-import Campaign from "../models/Campaign.js";
+import Donation from "../models/donation.js";
+import Campaign from "../models/campaign.js";
 
 const RECENT_LIMIT = 5;
 

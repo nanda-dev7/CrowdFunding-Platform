@@ -1,6 +1,6 @@
 // import razorpay from "../config/razorpay.js";
-// import Donation from "../models/Donation.js";
-// import Campaign from "../models/Campaign.js";
+// import Donation from "../models/donation.js";
+// import Campaign from "../models/campaign.js";
 // import User from "../models/user.js";
 // import verifyRazorpaySignature from "../utils/verifyRazorpaySignature.js";
 // import assignCoupon from "../utils/assignCoupon.js";
@@ -190,7 +190,7 @@
 // // GET /api/users/me/coupons
 // export const getMyCoupons = async (req, res, next) => {
 //   try {
-//     const { default: Coupon } = await import("../models/Coupon.js");
+//     const { default: Coupon } = await import("../models/coupon.js");
 //     const coupons = await Coupon.find({ user: req.user._id })
 //       .sort({ createdAt: -1 })
 //       .lean();
@@ -205,8 +205,8 @@
 
 
 import razorpay from "../config/razorpay.js";
-import Donation from "../models/Donation.js";
-import Campaign from "../models/Campaign.js";
+import Donation from "../models/donation.js";
+import Campaign from "../models/campaign.js";
 import User from "../models/user.js";
 import verifyRazorpaySignature from "../utils/verifyRazorpaySignature.js";
 import createNotification from "../utils/createNotification.js";

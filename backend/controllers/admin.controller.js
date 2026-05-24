@@ -1,7 +1,7 @@
 // import User from "../models/user.js";
-// import Campaign from "../models/Campaign.js";
-// import Donation from "../models/Donation.js";
-// import CampaignerRequest from "../models/CampaignerRequest.js";
+// import Campaign from "../models/campaign.js";
+// import Donation from "../models/donation.js";
+// import CampaignerRequest from "../models/campaignerRequest.js";
 // import createNotification from "../utils/createNotification.js";
 // import sendEmail from "../utils/sendEmail.js";
 
@@ -354,9 +354,9 @@
 
 
 import User from "../models/user.js";
-import Campaign from "../models/Campaign.js";
-import Donation from "../models/Donation.js";
-import CampaignerRequest from "../models/CampaignerRequest.js";
+import Campaign from "../models/campaign.js";
+import Donation from "../models/donation.js";
+import CampaignerRequest from "../models/campaignerRequest.js";
 import createNotification from "../utils/createNotification.js";
 import sendEmail from "../utils/sendEmail.js";
 
