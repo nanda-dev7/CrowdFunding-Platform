@@ -1,9 +1,9 @@
 const styles = {
-  primary: "bg-moss text-white shadow-card hover:bg-[#3f604f]",
-  secondary: "bg-white text-bark border border-bark/10 hover:border-moss/30 hover:text-moss",
-  urgent: "bg-coral text-white shadow-card hover:bg-[#c95b4d]",
-  ghost: "bg-transparent text-bark hover:bg-white/70",
-  outline: "bg-white text-moss border border-moss/25 hover:bg-sage",
+  primary: "bg-coral text-white shadow-card hover:bg-[#c8503a]",
+  secondary: "bg-white text-bark border border-oat hover:border-clay hover:text-ink",
+  urgent: "bg-[#d32f2f] text-white shadow-card hover:bg-[#b71c1c]",
+  ghost: "bg-transparent text-bark hover:bg-sage",
+  outline: "bg-white text-coral border border-coral/25 hover:bg-mist",
 };
 
 const sizes = {

@@ -5,7 +5,7 @@ export default function AdminTabs({ active, setActive, tabs }) {
         <button
           key={tab.id}
           onClick={() => setActive(tab.id)}
-          className={`whitespace-nowrap rounded-full px-5 py-3 text-sm font-bold ${active === tab.id ? "bg-moss text-white" : "text-bark hover:bg-cream"}`}
+          className={`whitespace-nowrap rounded-full px-5 py-2 text-sm font-bold uppercase tracking-wider transition-colors ${active === tab.id ? "bg-coral text-white" : "border border-transparent text-bark hover:border-oat hover:bg-white"}`}
         >
           {tab.label}
         </button>

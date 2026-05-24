@@ -14,7 +14,7 @@
 
 //     // Build sort object — urgent campaigns always float to top
 //     let sortObj = {};
-//     const urgencyOrder = { critical: 0, surgery: 1, normal: 2 };
+//     const urgencyOrder = { urgent: 0, normal: 1 };
 
 //     switch (sort) {
 //       case "most-funded":
@@ -52,7 +52,7 @@
 //   try {
 //     const campaigns = await Campaign.find({
 //       status: "approved",
-//       urgencyLevel: { $in: ["critical", "surgery"] },
+//       urgencyLevel: "urgent",
 //     })
 //       .populate("creator", "name")
 //       .sort({ createdAt: -1 })
@@ -225,7 +225,7 @@ export const getCampaigns = async (req, res, next) => {
     if (urgencyLevel) query.urgencyLevel = urgencyLevel;
 
     let sortObj = {};
-    const urgencyOrder = { critical: 0, surgery: 1, normal: 2 };
+    const urgencyOrder = { urgent: 0, normal: 1 };
 
     switch (sort) {
       case "most-funded":
@@ -243,10 +243,10 @@ export const getCampaigns = async (req, res, next) => {
       .sort(sortObj)
       .lean();
 
-    // Put urgent (critical/surgery) first
+    // Put urgent first
     const sorted = campaigns.sort((a, b) => {
       const diff =
-        (urgencyOrder[a.urgencyLevel] ?? 2) - (urgencyOrder[b.urgencyLevel] ?? 2);
+        (urgencyOrder[a.urgencyLevel] ?? 1) - (urgencyOrder[b.urgencyLevel] ?? 1);
       return diff !== 0 ? diff : 0;
     });
 
@@ -261,7 +261,7 @@ export const getUrgentCampaigns = async (req, res, next) => {
   try {
     const campaigns = await Campaign.find({
       status: "approved",
-      urgencyLevel: { $in: ["critical", "surgery"] },
+      urgencyLevel: "urgent",
     })
       .populate("creator", "name")
       .sort({ createdAt: -1 })
@@ -307,10 +307,16 @@ export const getCampaignById = async (req, res, next) => {
 // POST /api/campaigns
 export const createCampaign = async (req, res, next) => {
   try {
-    const { title, description, category, goalAmount, deadline, urgencyLevel } = req.body;
+    const { 
+      title, description, category, goalAmount, deadline, urgencyLevel, 
+      campaignType, location, animalDetails, vetDetails, groupWelfareDetails, verificationDetails, consentChecked 
+    } = req.body;
 
-    if (!title || !description || !category || !goalAmount || !deadline) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!title || !description || !category || !goalAmount || !deadline || !campaignType || !location) {
+      return res.status(400).json({ message: "All basic fields and campaign type are required" });
+    }
+    if (consentChecked !== "true" && consentChecked !== true) {
+      return res.status(400).json({ message: "You must confirm the consent checkbox" });
     }
     if (!req.file) {
       return res.status(400).json({ message: "Cover image is required" });
@@ -326,8 +332,15 @@ export const createCampaign = async (req, res, next) => {
       deadline: new Date(deadline),
       coverImage,
       urgencyLevel: urgencyLevel || "normal",
+      campaignType,
+      location,
       creator: req.user._id,
       status: "pending",
+      animalDetails: animalDetails ? (typeof animalDetails === "string" ? JSON.parse(animalDetails) : animalDetails) : undefined,
+      vetDetails: vetDetails ? (typeof vetDetails === "string" ? JSON.parse(vetDetails) : vetDetails) : undefined,
+      groupWelfareDetails: groupWelfareDetails ? (typeof groupWelfareDetails === "string" ? JSON.parse(groupWelfareDetails) : groupWelfareDetails) : undefined,
+      verificationDetails: verificationDetails ? (typeof verificationDetails === "string" ? JSON.parse(verificationDetails) : verificationDetails) : undefined,
+      consentChecked: true,
     });
 
     return res.status(201).json({ message: "Campaign created and pending approval", campaign });
@@ -349,16 +362,30 @@ export const updateCampaign = async (req, res, next) => {
       return res.status(403).json({ message: "Not authorised to edit this campaign" });
     }
 
-    const { title, description, goalAmount, deadline, urgencyLevel } = req.body;
+    const { 
+      title, description, goalAmount, deadline, urgencyLevel, 
+      campaignType, location, animalDetails, vetDetails, groupWelfareDetails, verificationDetails 
+    } = req.body;
 
     if (title) campaign.title = title;
     if (description) campaign.description = description;
     if (goalAmount) campaign.goalAmount = Number(goalAmount);
     if (deadline) campaign.deadline = new Date(deadline);
     if (urgencyLevel) campaign.urgencyLevel = urgencyLevel;
+    if (campaignType) campaign.campaignType = campaignType;
+    if (location) campaign.location = location;
+    if (animalDetails) campaign.animalDetails = typeof animalDetails === "string" ? JSON.parse(animalDetails) : animalDetails;
+    if (vetDetails) campaign.vetDetails = typeof vetDetails === "string" ? JSON.parse(vetDetails) : vetDetails;
+    if (groupWelfareDetails) campaign.groupWelfareDetails = typeof groupWelfareDetails === "string" ? JSON.parse(groupWelfareDetails) : groupWelfareDetails;
+    if (verificationDetails) campaign.verificationDetails = typeof verificationDetails === "string" ? JSON.parse(verificationDetails) : verificationDetails;
 
     if (req.file) {
       campaign.coverImage = await uploadToCloudinary(req.file.buffer, "pawrescue/campaigns");
+    }
+
+    // Force re-approval if edited by owner after being approved
+    if (campaign.status === "approved" && isOwner && !isAdmin) {
+      campaign.status = "pending";
     }
 
     await campaign.save();
@@ -422,8 +449,8 @@ export const addCampaignUpdate = async (req, res, next) => {
   }
 };
 
-// POST /api/campaigns/:id/medical-documents
-export const uploadMedicalDocument = async (req, res, next) => {
+// POST /api/campaigns/:id/supporting-documents
+export const uploadSupportingDocument = async (req, res, next) => {
   try {
     const campaign = await Campaign.findById(req.params.id);
     if (!campaign) return res.status(404).json({ message: "Campaign not found" });
@@ -444,7 +471,7 @@ export const uploadMedicalDocument = async (req, res, next) => {
       return res.status(400).json({ message: "Document file is required" });
     }
 
-    const fileUrl = await uploadToCloudinary(req.file.buffer, "pawrescue/medical-documents");
+    const fileUrl = await uploadToCloudinary(req.file.buffer, "pawrescue/supporting-documents");
 
     // Detect file type from mimetype
     let fileType = "other";
@@ -454,33 +481,24 @@ export const uploadMedicalDocument = async (req, res, next) => {
       fileType = "pdf";
     }
 
-    const medicalDocument = {
-      title: title.trim(),
+    campaign.supportingDocuments.push({
+      title,
       fileUrl,
       fileType,
       uploadedBy: req.user._id,
-      uploadedAt: new Date(),
-    };
-
-    campaign.medicalDocuments.push(medicalDocument);
+    });
     await campaign.save();
 
-    const saved = campaign.medicalDocuments[campaign.medicalDocuments.length - 1];
-
-    return res.status(201).json({
-      message: "Medical document uploaded successfully",
-      medicalDocument: saved,
-    });
+    return res.status(201).json({ message: "Document uploaded", campaign });
   } catch (error) {
     next(error);
   }
 };
 
-// DELETE /api/campaigns/:campaignId/medical-documents/:documentId
-export const deleteMedicalDocument = async (req, res, next) => {
+// DELETE /api/campaigns/:campaignId/supporting-documents/:documentId
+export const deleteSupportingDocument = async (req, res, next) => {
   try {
     const { campaignId, documentId } = req.params;
-
     const campaign = await Campaign.findById(campaignId);
     if (!campaign) return res.status(404).json({ message: "Campaign not found" });
 
@@ -491,17 +509,17 @@ export const deleteMedicalDocument = async (req, res, next) => {
       return res.status(403).json({ message: "Not authorised to delete documents for this campaign" });
     }
 
-    const docIndex = campaign.medicalDocuments.findIndex(
-      (d) => d._id.toString() === documentId
-    );
-    if (docIndex === -1) {
-      return res.status(404).json({ message: "Medical document not found" });
+    // Filter out the document
+    const initialLength = campaign.supportingDocuments.length;
+    campaign.supportingDocuments = campaign.supportingDocuments.filter((doc) => doc._id.toString() !== documentId);
+
+    if (campaign.supportingDocuments.length === initialLength) {
+      return res.status(404).json({ message: "Document not found" });
     }
 
-    campaign.medicalDocuments.splice(docIndex, 1);
     await campaign.save();
 
-    return res.status(200).json({ message: "Medical document deleted successfully" });
+    return res.status(200).json({ message: "Document deleted successfully" });
   } catch (error) {
     next(error);
   }

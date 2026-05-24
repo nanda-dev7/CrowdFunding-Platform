@@ -10,13 +10,13 @@ export const updateCampaign = (id, formData) =>
   api.put(`/campaigns/${id}`, formData, { headers: { "Content-Type": "multipart/form-data" } }).then((res) => res.data);
 export const addCampaignUpdate = (id, formData) =>
   api.post(`/campaigns/${id}/updates`, formData, { headers: { "Content-Type": "multipart/form-data" } }).then((res) => res.data);
-export const uploadMedicalDocument = (campaignId, formData) =>
+export const uploadSupportingDocument = (campaignId, formData) =>
   api
-    .post(`/campaigns/${campaignId}/medical-documents`, formData, {
+    .post(`/campaigns/${campaignId}/supporting-documents`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     })
     .then((res) => res.data);
-export const deleteMedicalDocument = (campaignId, documentId) =>
-  api.delete(`/campaigns/${campaignId}/medical-documents/${documentId}`).then((res) => res.data);
+export const deleteSupportingDocument = (campaignId, documentId) =>
+  api.delete(`/campaigns/${campaignId}/supporting-documents/${documentId}`).then((res) => res.data);
 export const updateExpenses = (campaignId, expenses) =>
   api.put(`/campaigns/${campaignId}/expenses`, { expenses }).then((res) => res.data);

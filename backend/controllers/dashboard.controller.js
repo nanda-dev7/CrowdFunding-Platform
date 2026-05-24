@@ -30,7 +30,7 @@
 //     // Emergency rescues (critical or surgery urgency)
 //     const emergencyCampaigns = await Campaign.find({
 //       _id: { $in: uniqueCampaignIds },
-//       urgencyLevel: { $in: ["critical", "surgery"] },
+//       urgencyLevel: "urgent",
 //     }).select("_id");
 //     const emergencyRescuesSupported = emergencyCampaigns.length;
 
@@ -127,7 +127,7 @@ export const getDonorDashboard = async (req, res, next) => {
     // Emergency rescues (critical or surgery urgency)
     const emergencyCampaigns = await Campaign.find({
       _id: { $in: uniqueCampaignIds },
-      urgencyLevel: { $in: ["critical", "surgery"] },
+      urgencyLevel: "urgent",
     }).select("_id");
     const emergencyRescuesSupported = emergencyCampaigns.length;
 

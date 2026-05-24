@@ -231,20 +231,18 @@
 //     await campaign.save();
 
 //     // If marked urgent, notify existing donors
-//     if (urgencyLevel === "critical" || urgencyLevel === "surgery") {
+//     if (urgencyLevel === "urgent") {
 //       const donorIds = await Donation.find({
 //         campaign: campaign._id,
 //         status: "success",
 //       }).distinct("donor");
 
-//       const urgencyLabel =
-//         urgencyLevel === "surgery" ? "Needs Surgery" : "Critical";
 //       await Promise.all(
 //         donorIds.map((donorId) =>
 //           createNotification({
 //             user: donorId,
-//             title: `🚨 Urgent: ${urgencyLabel}`,
-//             message: `Campaign "${campaign.title}" has been marked as ${urgencyLabel}. Consider donating more.`,
+//             title: `🚨 Urgent: Needs Immediate Help`,
+//             message: `Campaign "${campaign.title}" has been marked as Urgent. Consider donating more.`,
 //             type: "urgent",
 //             campaign: campaign._id,
 //           }),
@@ -554,8 +552,8 @@ export const rejectCampaign = async (req, res, next) => {
 export const markCampaignUrgent = async (req, res, next) => {
   try {
     const { urgencyLevel } = req.body;
-    if (!urgencyLevel || !["normal", "critical", "surgery"].includes(urgencyLevel)) {
-      return res.status(400).json({ message: "Valid urgency level required: normal, critical, surgery" });
+    if (!urgencyLevel || !["normal", "urgent"].includes(urgencyLevel)) {
+      return res.status(400).json({ message: "Valid urgency level required: normal, urgent" });
     }
 
     const campaign = await Campaign.findById(req.params.id);
@@ -565,19 +563,18 @@ export const markCampaignUrgent = async (req, res, next) => {
     await campaign.save();
 
     // If marked urgent, notify existing donors
-    if (urgencyLevel === "critical" || urgencyLevel === "surgery") {
+    if (urgencyLevel === "urgent") {
       const donorIds = await Donation.find({
         campaign: campaign._id,
         status: "success",
       }).distinct("donor");
 
-      const urgencyLabel = urgencyLevel === "surgery" ? "Needs Surgery" : "Critical";
       await Promise.all(
         donorIds.map((donorId) =>
           createNotification({
             user: donorId,
-            title: `🚨 Urgent: ${urgencyLabel}`,
-            message: `Campaign "${campaign.title}" has been marked as ${urgencyLabel}. Consider donating more.`,
+            title: `🚨 Urgent: Needs Immediate Help`,
+            message: `Campaign "${campaign.title}" has been marked as Urgent. Consider donating more.`,
             type: "urgent",
             campaign: campaign._id,
           })

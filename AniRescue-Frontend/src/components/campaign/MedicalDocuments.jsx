@@ -20,11 +20,11 @@ export default function MedicalDocuments({ documents = [], canManage = false, on
           <FileText className="text-teal-600" size={22} /> Documents
         </div>
       </div>
-      <h2 className="text-2xl font-extrabold text-ink">Medical Documents</h2>
+      <h2 className="text-2xl font-extrabold text-ink">Supporting Documents</h2>
       {!documents.length ? (
         <div className="mt-5">
           <EmptyState
-            title="No medical documents uploaded yet."
+            title="No supporting documents uploaded yet."
             description="Documents shared by the campaigner will appear here."
           />
         </div>
@@ -43,7 +43,7 @@ export default function MedicalDocuments({ documents = [], canManage = false, on
                     <FileText />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <h3 className="truncate font-extrabold text-ink">{document.title || document.name || "Medical document"}</h3>
+                    <h3 className="truncate font-extrabold text-ink">{document.title || document.name || "Supporting document"}</h3>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
                       <Badge variant="teal">{fileType(document)}</Badge>
                       <span className="text-xs font-semibold text-bark/55">{formatDate(document.createdAt || document.uploadedAt)}</span>

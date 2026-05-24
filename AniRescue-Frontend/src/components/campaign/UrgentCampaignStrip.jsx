@@ -35,7 +35,7 @@ export default function UrgentCampaignStrip({ campaigns = [] }) {
                 className="w-80 shrink-0 rounded-3xl border border-coral/20 bg-white p-4 shadow-card"
               >
                 <div className="mb-3 flex items-center justify-between gap-3">
-                  <Badge variant="urgent">Critical</Badge>
+                  <Badge variant="urgent">Urgent</Badge>
                   <Badge variant="success" className="gap-1">
                     <Activity size={12} /> Live
                   </Badge>

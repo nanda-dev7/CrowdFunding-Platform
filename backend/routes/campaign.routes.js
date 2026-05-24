@@ -57,8 +57,8 @@ import {
   createCampaign,
   updateCampaign,
   addCampaignUpdate,
-  uploadMedicalDocument,
-  deleteMedicalDocument,
+  uploadSupportingDocument,
+  deleteSupportingDocument,
   updateExpenses,
 } from "../controllers/campaign.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
@@ -98,20 +98,20 @@ router.post(
   addCampaignUpdate
 );
 
-// Medical documents
+// Supporting documents
 router.post(
-  "/:id/medical-documents",
+  "/:id/supporting-documents",
   authMiddleware,
   roleMiddleware("campaigner", "admin"),
   upload.single("document"),
-  uploadMedicalDocument
+  uploadSupportingDocument
 );
 
 router.delete(
-  "/:campaignId/medical-documents/:documentId",
+  "/:campaignId/supporting-documents/:documentId",
   authMiddleware,
   roleMiddleware("campaigner", "admin"),
-  deleteMedicalDocument
+  deleteSupportingDocument
 );
 
 // Transparency expenses

@@ -4,16 +4,37 @@ import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 // POST /api/campaigner/apply
 export const applyAsCampaigner = async (req, res, next) => {
   try {
-    const { campaignerType, publicDisplayName, campaignerReason } = req.body;
+    const {
+      campaignerType,
+      publicDisplayName,
+      campaignerReason,
+      location,
+      animalWelfareRole,
+      organizationType,
+      authorizedPersonRole,
+      organizationEmailPhone,
+      referenceContact,
+      payoutMethod,
+      upiId,
+      bankDetails,
+    } = req.body;
 
-    if (!campaignerType || !publicDisplayName || !campaignerReason) {
-      return res.status(400).json({ message: "Campaigner type, public display name, and reason are required" });
+    if (!campaignerType || !publicDisplayName || !campaignerReason || !location || !referenceContact || !payoutMethod) {
+      return res.status(400).json({ message: "Required fields are missing." });
     }
     if (req.user.role !== "donor") {
       return res.status(400).json({ message: "Only donors can apply as campaigners" });
     }
-    if (!req.file) {
-      return res.status(400).json({ message: "Verification document is required" });
+
+    const files = req.files || {};
+    if (!files.animalWelfareProof || !files.payoutProof) {
+      return res.status(400).json({ message: "Animal welfare proof and payout proof are required." });
+    }
+    if (campaignerType === "Individual" && !files.identityProof) {
+      return res.status(400).json({ message: "Identity proof is required for individuals." });
+    }
+    if (campaignerType !== "Individual" && !files.organizationProof) {
+      return res.status(400).json({ message: "Organization proof is required for groups/NGOs." });
     }
 
     // Prevent duplicate pending request
@@ -25,14 +46,39 @@ export const applyAsCampaigner = async (req, res, next) => {
       return res.status(409).json({ message: "You already have a pending application" });
     }
 
-    const verificationDocumentUrl = await uploadToCloudinary(req.file.buffer, "pawrescue/documents");
+    // Upload files concurrently
+    const uploadTasks = [];
+    const fileKeys = ["identityProof", "animalWelfareProof", "payoutProof", "organizationProof", "authorizationLetter"];
+    
+    fileKeys.forEach((key) => {
+      if (files[key] && files[key][0]) {
+        uploadTasks.push(
+          uploadToCloudinary(files[key][0].buffer, "pawrescue/documents").then((url) => ({ key: `${key}Url`, url }))
+        );
+      }
+    });
+
+    const uploadedUrls = await Promise.all(uploadTasks);
+    const urlsMap = uploadedUrls.reduce((acc, curr) => {
+      acc[curr.key] = curr.url;
+      return acc;
+    }, {});
 
     const request = await CampaignerRequest.create({
       userId: req.user._id,
       campaignerType,
       publicDisplayName,
       campaignerReason,
-      verificationDocumentUrl,
+      location,
+      animalWelfareRole,
+      organizationType,
+      authorizedPersonRole,
+      organizationEmailPhone,
+      referenceContact,
+      payoutMethod,
+      upiId,
+      bankDetails: bankDetails ? JSON.parse(bankDetails) : undefined,
+      ...urlsMap,
       status: "pending",
     });
 

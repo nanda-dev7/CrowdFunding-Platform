@@ -21,7 +21,6 @@ export default function CampaignFilters({ filters, setFilters }) {
         <Select aria-label="Urgency" value={filters.urgency || ""} onChange={update("urgency")}>
           <option value="">Any urgency</option>
           <option value="urgent">Urgent</option>
-          <option value="critical">Critical</option>
           <option value="normal">Normal</option>
         </Select>
         <Select aria-label="Sort campaigns" value={filters.sort || "newest"} onChange={update("sort")}>

@@ -11,7 +11,7 @@ const fallbackImage = "https://images.unsplash.com/photo-1601758064224-c3c14733a
 
 export default function CampaignCard({ campaign }) {
   const progress = calculateProgress(campaign.raisedAmount || campaign.raised, campaign.goalAmount || campaign.goal);
-  const urgent = campaign.isUrgent || campaign.urgency === "urgent" || campaign.urgencyLevel === "critical";
+  const urgent = campaign.isUrgent || campaign.urgency === "urgent" || campaign.urgencyLevel === "urgent";
   return (
     <motion.article
       whileHover={{ y: -7 }}
@@ -28,7 +28,7 @@ export default function CampaignCard({ campaign }) {
           <div className="absolute left-4 top-4 flex flex-wrap gap-2">
             {urgent && (
               <Badge variant="urgent" className="gap-1">
-                <Siren size={12} /> Critical
+                <Siren size={12} /> Urgent
               </Badge>
             )}
             <Badge variant="teal">{campaign.category || "Treatment"}</Badge>

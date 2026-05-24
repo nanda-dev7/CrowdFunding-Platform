@@ -1,1 +1,0 @@
-import{k as t}from"./index-BjE6x52J.js";const r=a=>t.post("/campaigner/apply",a,{headers:{"Content-Type":"multipart/form-data"}}).then(p=>p.data),n=()=>t.get("/campaigner/dashboard").then(a=>a.data);export{r as a,n as g};

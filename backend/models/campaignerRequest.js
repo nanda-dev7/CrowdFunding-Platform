@@ -22,10 +22,31 @@ const campaignerRequestSchema = new mongoose.Schema(
       required: [true, "Campaigner reason is required"],
       trim: true,
     },
-    verificationDocumentUrl: {
+    location: { type: String, required: true },
+    animalWelfareRole: { type: String }, // For individual
+    organizationType: { type: String }, // For NGO
+    authorizedPersonRole: { type: String }, // For NGO
+    organizationEmailPhone: { type: String }, // For NGO
+    referenceContact: { type: String, required: true },
+    payoutMethod: {
       type: String,
-      required: [true, "Verification document is required"],
+      enum: ["upi", "bank_account"],
+      required: true,
     },
+    upiId: { type: String },
+    bankDetails: {
+      accountHolderName: String,
+      bankName: String,
+      accountNumber: String,
+      ifscCode: String,
+    },
+    // Files
+    verificationDocumentUrl: { type: String }, // Legacy field
+    identityProofUrl: { type: String }, // Individual
+    animalWelfareProofUrl: { type: String, required: true },
+    payoutProofUrl: { type: String, required: true },
+    organizationProofUrl: { type: String }, // NGO
+    authorizationLetterUrl: { type: String }, // NGO
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],

@@ -29,10 +29,10 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(73,112,91,0.22),transparent_32%),radial-gradient(circle_at_right,rgba(184,128,93,0.24),transparent_30%)]" />
         <div className="relative mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_0.9fr] lg:px-8">
           <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
-            <motion.p variants={fadeUp} className="mb-4 inline-flex rounded-full bg-white px-4 py-2 text-sm font-extrabold text-moss shadow-sm">
+            <motion.p variants={fadeUp} className="mb-6 inline-flex rounded-full bg-mist px-5 py-2 text-xs font-black uppercase tracking-widest text-coral">
               Transparent emergency rescue crowdfunding
             </motion.p>
-            <motion.h1 variants={fadeUp} className="text-5xl font-extrabold leading-[1.02] text-ink md:text-7xl">
+            <motion.h1 variants={fadeUp} className="text-5xl font-black tracking-tighter leading-[1.02] text-ink md:text-[5.5rem] md:leading-[0.95]">
               Help Save Injured and Suffering Animals
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-lg leading-8 text-bark/75">

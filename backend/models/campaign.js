@@ -24,7 +24,7 @@ const updateSchema = new mongoose.Schema(
   { _id: true }
 );
 
-const medicalDocumentSchema = new mongoose.Schema(
+const supportingDocumentSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -78,6 +78,21 @@ const campaignSchema = new mongoose.Schema(
       trim: true,
       minlength: [5, "Title must be at least 5 characters"],
     },
+    campaignType: {
+      type: String,
+      enum: [
+        "Individual animal rescue",
+        "Group animal rescue",
+        "Medical treatment",
+        "Feeding drive",
+        "Vaccination / sterilization drive",
+        "Safety equipment drive",
+        "Wildlife relocation / conflict prevention",
+        "Shelter / foster support",
+        "Other animal welfare campaign",
+      ],
+      required: [true, "Campaign type is required"],
+    },
     description: {
       type: String,
       required: [true, "Description is required"],
@@ -113,8 +128,41 @@ const campaignSchema = new mongoose.Schema(
     },
     urgencyLevel: {
       type: String,
-      enum: ["normal", "critical", "surgery"],
+      enum: ["normal", "urgent"],
       default: "normal",
+    },
+    location: {
+      type: String,
+      required: [true, "Location is required"],
+    },
+    animalDetails: {
+      type: { type: String },
+      name: { type: String },
+      approxAge: { type: String },
+      gender: { type: String },
+      condition: { type: String },
+    },
+    vetDetails: {
+      clinicName: { type: String },
+      contactNumber: { type: String },
+      diagnosis: { type: String },
+      estimatedCost: { type: Number },
+    },
+    groupWelfareDetails: {
+      targetGroup: { type: String },
+      estimatedCount: { type: String },
+      campaignArea: { type: String },
+      actionPlan: { type: String },
+      requiredMaterials: { type: String },
+    },
+    verificationDetails: {
+      partnerDetails: { type: String },
+      permissionProofUrl: { type: String },
+    },
+    consentChecked: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
     creator: {
       type: mongoose.Schema.Types.ObjectId,
@@ -122,7 +170,7 @@ const campaignSchema = new mongoose.Schema(
       required: true,
     },
     updates: [updateSchema],
-    medicalDocuments: [medicalDocumentSchema],
+    supportingDocuments: [supportingDocumentSchema],
     expenses: [expenseSchema],
     donations: [
       {

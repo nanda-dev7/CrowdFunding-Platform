@@ -1,9 +1,9 @@
 const variants = {
-  default: "bg-oat text-bark",
-  urgent: "bg-coral/10 text-coral ring-1 ring-coral/20",
-  success: "bg-sage text-moss",
-  teal: "bg-mist text-teal-700",
-  dark: "bg-bark text-white",
+  default: "bg-white text-bark border border-oat",
+  urgent: "bg-mist text-coral",
+  success: "bg-white text-moss border border-oat",
+  teal: "bg-mist text-coral",
+  dark: "bg-ink text-white",
 };
 
 export default function Badge({ children, variant = "default", className = "" }) {

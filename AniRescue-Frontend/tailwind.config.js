@@ -4,15 +4,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        cream: "#fbf5ea",
-        oat: "#f2e3ce",
-        clay: "#b8805d",
-        bark: "#4f3527",
-        moss: "#49705b",
-        sage: "#dfeadf",
-        coral: "#d96a5b",
-        mist: "#e8fbfb",
-        ink: "#251d18",
+        cream: "#ffffff",
+        oat: "#f0f0f0",
+        clay: "#a3a3a3",
+        bark: "#555555",
+        moss: "#111111",
+        sage: "#f8f9fc",
+        coral: "#e25c43",
+        mist: "#fdece9",
+        ink: "#111111",
       },
       boxShadow: {
         soft: "0 18px 45px rgba(79, 53, 39, 0.12)",

@@ -25,7 +25,7 @@ function NavLinks({ onClick }) {
       to={item.to}
       onClick={onClick}
       className={({ isActive }) =>
-        `rounded-full px-4 py-2 text-sm font-semibold transition ${isActive ? "bg-sage text-moss" : "text-bark/70 hover:bg-white hover:text-ink"}`
+        `rounded-full px-4 py-2 text-sm font-bold transition ${isActive ? "text-coral" : "text-bark/70 hover:bg-white hover:text-ink"}`
       }
     >
       {item.label}
@@ -43,11 +43,8 @@ export default function MainLayout() {
     <div className="min-h-screen bg-gradient-to-b from-cream via-white to-[#f7efe3] text-ink">
       <header className="sticky top-0 z-40 border-b border-white/50 bg-cream/75 backdrop-blur-xl">
         <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link to="/" className="flex items-center gap-3 font-extrabold text-ink" aria-label="AniRescue home">
-            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-moss text-white shadow-card">
-              <PawPrint size={23} />
-            </span>
-            <span className="text-xl">AniRescue</span>
+          <Link to="/" className="text-2xl font-black tracking-tighter text-coral" aria-label="AniRescue home">
+            AniRescue
           </Link>
 
           <div className="hidden items-center rounded-full border border-bark/10 bg-white/70 p-1 shadow-sm lg:flex">
@@ -133,7 +130,9 @@ export default function MainLayout() {
               className="ml-auto flex h-full w-80 max-w-[86vw] flex-col bg-cream p-5 shadow-soft"
             >
               <div className="mb-8 flex items-center justify-between">
-                <span className="text-lg font-extrabold">AniRescue</span>
+                <Link to="/" className="text-2xl font-black tracking-tighter text-coral">
+                  AniRescue
+                </Link>
                 <button onClick={() => setOpen(false)} className="rounded-full bg-white p-2" aria-label="Close menu">
                   <X />
                 </button>
@@ -171,7 +170,7 @@ export default function MainLayout() {
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
           <div className="md:col-span-2">
             <div className="mb-4 flex items-center gap-3 font-extrabold">
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-moss text-white">
+              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-coral text-white">
                 <PawPrint size={20} />
               </span>
               AniRescue
@@ -193,7 +192,7 @@ export default function MainLayout() {
             <p className="text-sm text-bark/70">hello@aniRescue.org</p>
             <div className="mt-4 flex rounded-full border border-bark/10 bg-cream p-1">
               <input className="min-w-0 flex-1 bg-transparent px-3 text-sm outline-none" placeholder="Email updates" aria-label="Newsletter email" />
-              <button className="rounded-full bg-moss px-4 py-2 text-sm font-bold text-white">Join</button>
+              <button className="rounded-full bg-coral px-4 py-2 text-sm font-bold text-white">Join</button>
             </div>
           </div>
         </div>

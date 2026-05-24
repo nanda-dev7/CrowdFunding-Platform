@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { getCampaigns } from "../api/campaignApi";
@@ -12,6 +12,16 @@ const normalizeList = (data) => data?.campaigns || data?.items || data || [];
 export default function Campaigns() {
   const [params] = useSearchParams();
   const [filters, setFilters] = useState({ urgency: params.get("urgency") || "", sort: "newest" });
+
+  useEffect(() => {
+    if (params.has("urgency") || Array.from(params.entries()).length === 0) {
+      setFilters((prev) => ({
+        ...prev,
+        urgency: params.get("urgency") || "",
+      }));
+    }
+  }, [params]);
+
   const query = useQuery({ queryKey: ["campaigns", filters], queryFn: () => getCampaigns(filters), select: normalizeList });
   const campaigns = query.data || [];
   const filtered = useMemo(() => {
@@ -25,8 +35,8 @@ export default function Campaigns() {
   return (
     <PageTransition className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <p className="text-sm font-extrabold uppercase tracking-[0.22em] text-moss">Campaigns</p>
-        <h1 className="mt-2 text-4xl font-extrabold text-ink md:text-5xl">Find a rescue that needs you</h1>
+        <p className="text-sm font-bold uppercase tracking-widest text-coral">Campaigns</p>
+        <h1 className="mt-2 text-4xl font-black tracking-tight text-ink md:text-5xl">Find a rescue that needs you</h1>
         <p className="mt-3 max-w-2xl text-bark/70">Search verified medical fundraisers and support urgent treatment for injured animals.</p>
       </div>
       <CampaignFilters filters={filters} setFilters={setFilters} />

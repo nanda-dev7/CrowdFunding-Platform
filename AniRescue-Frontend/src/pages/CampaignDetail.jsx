@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { PieChart, ShieldCheck } from "lucide-react";
-import { deleteMedicalDocument, getCampaignById } from "../api/campaignApi";
+import { deleteSupportingDocument, getCampaignById } from "../api/campaignApi";
 import CampaignDetailHeader from "../components/campaign/CampaignDetailHeader";
 import CampaignerDetails from "../components/campaign/CampaignerDetails";
 import DonationPanel from "../components/campaign/DonationPanel";
@@ -26,9 +26,9 @@ export default function CampaignDetail() {
   const creator = campaign.creator || campaign.campaigner || {};
   const canManage = user?.role === "admin" || user?._id === creator._id || user?.id === creator.id;
   const deleteMutation = useMutation({
-    mutationFn: (documentId) => deleteMedicalDocument(campaign._id || campaign.id, documentId),
+    mutationFn: (documentId) => deleteSupportingDocument(campaign._id || campaign.id, documentId),
     onSuccess: () => {
-      toast.success("Medical document deleted");
+      toast.success("Document deleted");
       queryClient.invalidateQueries({ queryKey: ["campaign", id] });
     },
     onError: (error) => toast.error(error.response?.data?.message || "Could not delete document"),
@@ -51,7 +51,7 @@ export default function CampaignDetail() {
             <h2 className="text-2xl font-extrabold text-ink">Story</h2>
             <p className="mt-4 whitespace-pre-line text-base leading-8 text-bark/75">{campaign.story || campaign.description}</p>
           </section>
-          <MedicalDocuments documents={campaign.medicalDocuments || []} canManage={canManage} onDelete={(documentId) => deleteMutation.mutate(documentId)} />
+          <MedicalDocuments documents={campaign.supportingDocuments || campaign.medicalDocuments || []} canManage={canManage} onDelete={(documentId) => deleteMutation.mutate(documentId)} />
           <Timeline updates={campaign.updates || campaign.timeline || []} />
           <section className="rounded-[2rem] border border-bark/10 bg-white p-6 shadow-card">
             <div className="flex items-center gap-3">

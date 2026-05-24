@@ -1,0 +1,1 @@
+import{k as a}from"./index-ZhPonKPw.js";const s=o=>a.post("/donations/create-order",o).then(t=>t.data),e=o=>a.post("/donations/confirm",o).then(t=>t.data),r=()=>a.get("/users/me/donations").then(o=>o.data);export{e as a,s as c,r as g};
