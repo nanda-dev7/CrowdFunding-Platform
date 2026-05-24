@@ -3,7 +3,7 @@ import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDate } from "../../utils/formatDate";
 
 export default function RecentDonors({ donors = [] }) {
-  const list = donors.length
+  const list = Array.isArray(donors) && donors.length
     ? donors
     : [
         { name: "Anonymous donor", amount: 2500, createdAt: new Date() },

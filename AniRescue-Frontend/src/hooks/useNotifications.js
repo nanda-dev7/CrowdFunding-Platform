@@ -10,7 +10,10 @@ export function useNotifications() {
     queryFn: getNotifications,
     enabled: isAuthenticated,
     refetchInterval: 45_000,
-    select: (data) => data.notifications || data.items || data || [],
+    select: (data) => {
+      const list = data?.notifications || data?.items || data;
+      return Array.isArray(list) ? list : [];
+    },
   });
   const readMutation = useMutation({
     mutationFn: markNotificationRead,
