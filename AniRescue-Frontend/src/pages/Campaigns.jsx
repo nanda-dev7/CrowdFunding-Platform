@@ -7,7 +7,10 @@ import CampaignFilters from "../components/campaign/CampaignFilters";
 import EmptyState from "../components/common/EmptyState";
 import PageTransition from "../components/common/PageTransition";
 import Skeleton from "../components/common/Skeleton";
-const normalizeList = (data) => data?.campaigns || data?.items || data || [];
+const normalizeList = (data) => {
+  const list = data?.campaigns || data?.items || data;
+  return Array.isArray(list) ? list : [];
+};
 
 export default function Campaigns() {
   const [params] = useSearchParams();
